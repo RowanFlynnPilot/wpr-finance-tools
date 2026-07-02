@@ -36,6 +36,14 @@
 .tcc-dek strong {
   color: #1a1a1a;
 }
+.tcc-method-note {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #6b6558;
+  margin: -14px 0 22px;
+  max-width: 62ch;
+}
 
 .tcc-grid {
   display: grid;

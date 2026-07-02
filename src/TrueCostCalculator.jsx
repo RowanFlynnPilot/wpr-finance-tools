@@ -5,8 +5,12 @@ import CONSTANTS from './local-constants.json'
 ;(function validate(c) {
   const checks = [
     c?.market?.median_sale_price?.value > 0,
+    typeof c?.market?.median_sale_price?.note === 'string' &&
+      c.market.median_sale_price.note.length > 0,
     Array.isArray(c?.property_tax?.municipalities) && c.property_tax.municipalities.length > 0,
-    c.property_tax?.municipalities?.every((m) => m.id && m.name && m.effective_rate > 0),
+    c.property_tax?.municipalities?.every(
+      (m) => m.id && m.name && m.effective_rate > 0 && ['city', 'village', 'town'].includes(m.type),
+    ),
     c?.insurance?.annual_rate_of_price > 0,
     c?.pmi?.annual_rate_of_loan > 0 && c?.pmi?.ltv_threshold > 0,
     c?.closing_costs?.buyer_rate_of_price > 0,
@@ -74,6 +78,7 @@ export default function TrueCostCalculator() {
         <strong>{usd(median)} median sale price</strong> from Wausau Pilot &amp; Review's property
         transaction records ({CONSTANTS.market.median_sale_price.as_of}).
       </p>
+      <p className="tcc-method-note">{CONSTANTS.market.median_sale_price.note}</p>
 
       <div className="tcc-grid">
         <div>
@@ -157,10 +162,20 @@ export default function TrueCostCalculator() {
               onChange={(e) => setMuniId(e.target.value)}
               aria-label="Municipality"
             >
-              {munis.map((m) => (
-                <option key={m.id} value={m.id}>
-                  {m.name} — {(m.effective_rate * 100).toFixed(2)}% effective tax
-                </option>
+              {[
+                ['city', 'Cities'],
+                ['village', 'Villages'],
+                ['town', 'Towns'],
+              ].map(([type, label]) => (
+                <optgroup key={type} label={label}>
+                  {munis
+                    .filter((m) => m.type === type)
+                    .map((m) => (
+                      <option key={m.id} value={m.id}>
+                        {m.name} — {(m.effective_rate * 100).toFixed(2)}% effective tax
+                      </option>
+                    ))}
+                </optgroup>
               ))}
             </select>
           </div>
@@ -206,8 +221,10 @@ export default function TrueCostCalculator() {
       </div>
 
       <div className="tcc-foot">
-        Estimates only — not a loan offer or financial advice. Property tax uses median effective
-        rates by municipality (annual bill ÷ market value); your assessment will differ. Insurance
+        Estimates only — not a loan offer or financial advice. Property tax uses each
+        municipality's effective full-value rate (total levy less the school levy credit ÷
+        equalized value) from the Wisconsin DOR's 2025 Town, Village and City Taxes report; your
+        assessed bill will differ, and lottery and first-dollar credits may lower it. Insurance
         estimated at Wisconsin's average premium relative to home value. Median sale price computed
         from Wisconsin DOR transfer records via WPR's property transaction data. Updated{' '}
         {CONSTANTS._meta.updated}.

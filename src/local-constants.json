@@ -10,38 +10,564 @@
 
   "market": {
     "median_sale_price": {
-      "value": 255000,
-      "source": "wpr-property-transactions ledger (SEED VALUE — replace with actual ledger median before launch)",
-      "as_of": "2026-Q2",
+      "value": 250000,
+      "note": "Median of 207 single-family sales, including 22 vacant-lot sales (median $62,000) — built homes alone ran $271,000.",
+      "source": "wpr-property-transactions ledger, data/transactions.json generated 2026-06-18 (DOR RETR; editorial policy applied in-pipeline: genuine sales only, >= $1,000; filtered to county = Marathon, property_use = Single family)",
+      "as_of": "sales recorded May 19 – June 18, 2026",
       "verified": false
     }
   },
 
   "property_tax": {
-    "note": "Effective rates (annual tax bill / market value), not statutory mill rates. Add municipalities only with a verified rate — an unlisted municipality is a missing feature, not a reason to guess.",
+    "note": "Effective full-value rates: (total property tax - school levy credit) / DOR equalized value. Source: WI DOR 'Town, Village and City Taxes 2025' (https://www.revenue.wi.gov/SLFReportscotvc/tvc25.PDF), column 8, taxes levied 2025 / collected 2026. Excludes lottery and first-dollar credits, so slightly high for owner-occupants. All 61 Marathon County tax districts listed; municipalities straddling a county line are rated on their Marathon County portion and labeled as such. First entry is the calculator's default selection. Every rate machine-verified against the report's raw tax/credit/value columns; sums reconcile to the printed county totals to the dollar.",
     "municipalities": [
       {
-        "id": "wausau",
+        "id": "city-wausau",
         "name": "City of Wausau",
-        "effective_rate": 0.0205,
-        "source": "Ownwell Marathon County analysis",
-        "as_of": "2025",
+        "type": "city",
+        "effective_rate": 0.01801,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
         "verified": false
       },
       {
-        "id": "kronenwetter",
+        "id": "city-abbotsford",
+        "name": "City of Abbotsford (Marathon Co. portion)",
+        "type": "city",
+        "effective_rate": 0.01822,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "city-colby",
+        "name": "City of Colby (Marathon Co. portion)",
+        "type": "city",
+        "effective_rate": 0.01504,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "city-marshfield",
+        "name": "City of Marshfield (Marathon Co. portion)",
+        "type": "city",
+        "effective_rate": 0.01645,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "city-mosinee",
+        "name": "City of Mosinee",
+        "type": "city",
+        "effective_rate": 0.01413,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "city-schofield",
+        "name": "City of Schofield",
+        "type": "city",
+        "effective_rate": 0.0152,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "village-athens",
+        "name": "Village of Athens",
+        "type": "village",
+        "effective_rate": 0.01582,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "village-birnamwood",
+        "name": "Village of Birnamwood (Marathon Co. portion)",
+        "type": "village",
+        "effective_rate": 0.01233,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "village-dorchester",
+        "name": "Village of Dorchester (Marathon Co. portion)",
+        "type": "village",
+        "effective_rate": 0.01673,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "village-edgar",
+        "name": "Village of Edgar",
+        "type": "village",
+        "effective_rate": 0.01345,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "village-elderon",
+        "name": "Village of Elderon",
+        "type": "village",
+        "effective_rate": 0.01059,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "village-fenwood",
+        "name": "Village of Fenwood",
+        "type": "village",
+        "effective_rate": 0.01026,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "village-hatley",
+        "name": "Village of Hatley",
+        "type": "village",
+        "effective_rate": 0.01193,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "village-kronenwetter",
         "name": "Village of Kronenwetter",
-        "effective_rate": 0.0157,
-        "source": "Ownwell Marathon County analysis",
-        "as_of": "2025",
+        "type": "village",
+        "effective_rate": 0.012,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
         "verified": false
       },
       {
-        "id": "county_other",
-        "name": "Elsewhere in Marathon County",
-        "effective_rate": 0.0156,
-        "source": "Ownwell Marathon County median effective rate",
-        "as_of": "2025",
+        "id": "village-maine",
+        "name": "Village of Maine",
+        "type": "village",
+        "effective_rate": 0.01343,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "village-marathon-city",
+        "name": "Village of Marathon City",
+        "type": "village",
+        "effective_rate": 0.01547,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "village-rib-mountain",
+        "name": "Village of Rib Mountain",
+        "type": "village",
+        "effective_rate": 0.01221,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "village-rothschild",
+        "name": "Village of Rothschild",
+        "type": "village",
+        "effective_rate": 0.0144,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "village-spencer",
+        "name": "Village of Spencer",
+        "type": "village",
+        "effective_rate": 0.01689,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "village-stratford",
+        "name": "Village of Stratford",
+        "type": "village",
+        "effective_rate": 0.01529,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "village-unity",
+        "name": "Village of Unity (Marathon Co. portion)",
+        "type": "village",
+        "effective_rate": 0.01109,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "village-weston",
+        "name": "Village of Weston",
+        "type": "village",
+        "effective_rate": 0.01447,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-bergen",
+        "name": "Town of Bergen",
+        "type": "town",
+        "effective_rate": 0.01028,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-berlin",
+        "name": "Town of Berlin",
+        "type": "town",
+        "effective_rate": 0.01095,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-bern",
+        "name": "Town of Bern",
+        "type": "town",
+        "effective_rate": 0.01155,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-bevent",
+        "name": "Town of Bevent",
+        "type": "town",
+        "effective_rate": 0.01131,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-brighton",
+        "name": "Town of Brighton",
+        "type": "town",
+        "effective_rate": 0.01286,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-cassel",
+        "name": "Town of Cassel",
+        "type": "town",
+        "effective_rate": 0.01088,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-cleveland",
+        "name": "Town of Cleveland",
+        "type": "town",
+        "effective_rate": 0.01263,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-day",
+        "name": "Town of Day",
+        "type": "town",
+        "effective_rate": 0.01194,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-easton",
+        "name": "Town of Easton",
+        "type": "town",
+        "effective_rate": 0.01238,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-eau-pleine",
+        "name": "Town of Eau Pleine",
+        "type": "town",
+        "effective_rate": 0.01064,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-elderon",
+        "name": "Town of Elderon",
+        "type": "town",
+        "effective_rate": 0.01026,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-emmet",
+        "name": "Town of Emmet",
+        "type": "town",
+        "effective_rate": 0.01092,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-frankfort",
+        "name": "Town of Frankfort",
+        "type": "town",
+        "effective_rate": 0.01089,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-franzen",
+        "name": "Town of Franzen",
+        "type": "town",
+        "effective_rate": 0.01095,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-green-valley",
+        "name": "Town of Green Valley",
+        "type": "town",
+        "effective_rate": 0.01117,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-guenther",
+        "name": "Town of Guenther",
+        "type": "town",
+        "effective_rate": 0.01193,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-halsey",
+        "name": "Town of Halsey",
+        "type": "town",
+        "effective_rate": 0.01212,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-hamburg",
+        "name": "Town of Hamburg",
+        "type": "town",
+        "effective_rate": 0.01262,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-harrison",
+        "name": "Town of Harrison",
+        "type": "town",
+        "effective_rate": 0.01084,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-hewitt",
+        "name": "Town of Hewitt",
+        "type": "town",
+        "effective_rate": 0.01194,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-holton",
+        "name": "Town of Holton",
+        "type": "town",
+        "effective_rate": 0.01186,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-hull",
+        "name": "Town of Hull",
+        "type": "town",
+        "effective_rate": 0.01069,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-johnson",
+        "name": "Town of Johnson",
+        "type": "town",
+        "effective_rate": 0.01313,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-knowlton",
+        "name": "Town of Knowlton",
+        "type": "town",
+        "effective_rate": 0.01031,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-marathon",
+        "name": "Town of Marathon",
+        "type": "town",
+        "effective_rate": 0.01161,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-mcmillan",
+        "name": "Town of McMillan",
+        "type": "town",
+        "effective_rate": 0.01083,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-mosinee",
+        "name": "Town of Mosinee",
+        "type": "town",
+        "effective_rate": 0.01057,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-norrie",
+        "name": "Town of Norrie",
+        "type": "town",
+        "effective_rate": 0.01106,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-plover",
+        "name": "Town of Plover",
+        "type": "town",
+        "effective_rate": 0.01298,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-reid",
+        "name": "Town of Reid",
+        "type": "town",
+        "effective_rate": 0.01046,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-rib-falls",
+        "name": "Town of Rib Falls",
+        "type": "town",
+        "effective_rate": 0.01153,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-rietbrock",
+        "name": "Town of Rietbrock",
+        "type": "town",
+        "effective_rate": 0.01161,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-ringle",
+        "name": "Town of Ringle",
+        "type": "town",
+        "effective_rate": 0.00952,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-spencer",
+        "name": "Town of Spencer",
+        "type": "town",
+        "effective_rate": 0.01257,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-stettin",
+        "name": "Town of Stettin",
+        "type": "town",
+        "effective_rate": 0.01164,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-texas",
+        "name": "Town of Texas",
+        "type": "town",
+        "effective_rate": 0.01166,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-wausau",
+        "name": "Town of Wausau",
+        "type": "town",
+        "effective_rate": 0.01166,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-weston",
+        "name": "Town of Weston",
+        "type": "town",
+        "effective_rate": 0.01149,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
+        "verified": false
+      },
+      {
+        "id": "town-wien",
+        "name": "Town of Wien",
+        "type": "town",
+        "effective_rate": 0.01033,
+        "source": "WI DOR Town, Village and City Taxes 2025 (tvc25.PDF), col 8",
+        "as_of": "2025 levy, collected 2026",
         "verified": false
       }
     ]
