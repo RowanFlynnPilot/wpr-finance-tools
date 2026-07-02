@@ -90,6 +90,10 @@ Push to `main` → `.github/workflows/deploy.yml` builds with Vite and publishes
 to GitHub Pages. `vite.config.js` sets `base: '/wpr-finance-tools/'` — if the
 repo is ever renamed, that base must change with it or all assets 404.
 
+Pages was created once via `gh api repos/RowanFlynnPilot/wpr-finance-tools/pages -X POST -f build_type=workflow`.
+Do NOT add `enablement: true` to configure-pages — the workflow token lacks
+admin scope to create the site, and it doesn't need to; the site exists.
+
 WordPress embed:
 ```html
 <iframe src="https://rowanflynnpilot.github.io/wpr-finance-tools/"
