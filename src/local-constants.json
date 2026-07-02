@@ -1,0 +1,76 @@
+{
+  "_meta": {
+    "name": "wpr-finance-tools local constants",
+    "geography": "Marathon County, WI",
+    "updated": "2026-07-01",
+    "update_cadence": "quarterly",
+    "update_process": "market.* from wpr-property-transactions ledger; property_tax.* verified against Marathon County Treasurer mill-rate publication each December; insurance/loan defaults reviewed manually",
+    "contract_rule": "Widgets import this file at build time. Every consuming widget MUST validate required keys at module load and throw on any missing key. No runtime fetch, no fallback values."
+  },
+
+  "market": {
+    "median_sale_price": {
+      "value": 255000,
+      "source": "wpr-property-transactions ledger (SEED VALUE — replace with actual ledger median before launch)",
+      "as_of": "2026-Q2",
+      "verified": false
+    }
+  },
+
+  "property_tax": {
+    "note": "Effective rates (annual tax bill / market value), not statutory mill rates. Add municipalities only with a verified rate — an unlisted municipality is a missing feature, not a reason to guess.",
+    "municipalities": [
+      {
+        "id": "wausau",
+        "name": "City of Wausau",
+        "effective_rate": 0.0205,
+        "source": "Ownwell Marathon County analysis",
+        "as_of": "2025",
+        "verified": false
+      },
+      {
+        "id": "kronenwetter",
+        "name": "Village of Kronenwetter",
+        "effective_rate": 0.0157,
+        "source": "Ownwell Marathon County analysis",
+        "as_of": "2025",
+        "verified": false
+      },
+      {
+        "id": "county_other",
+        "name": "Elsewhere in Marathon County",
+        "effective_rate": 0.0156,
+        "source": "Ownwell Marathon County median effective rate",
+        "as_of": "2025",
+        "verified": false
+      }
+    ]
+  },
+
+  "insurance": {
+    "annual_rate_of_price": 0.0046,
+    "note": "WI homeowners premium as share of home value. Derived from ~$1,390/yr on $300K dwelling (MoneyGeek/ValuePenguin 2026 WI averages). Statewide sources range $1,386–$2,465 depending on coverage assumptions; this uses the $300K-dwelling consensus cluster.",
+    "as_of": "2026-01",
+    "verified": false
+  },
+
+  "pmi": {
+    "annual_rate_of_loan": 0.0075,
+    "ltv_threshold": 0.8,
+    "note": "Applied when down payment < 20%. Industry-typical midpoint; not lender-specific.",
+    "verified": true
+  },
+
+  "closing_costs": {
+    "buyer_rate_of_price": 0.025,
+    "note": "Buyer-side estimate (lender, title, escrow, recording). WI real estate transfer fee ($3/$1,000) is seller-paid and excluded.",
+    "verified": true
+  },
+
+  "loan_defaults": {
+    "rate_pct": 6.5,
+    "term_years": 30,
+    "down_payment_pct": 10,
+    "note": "UI starting values only — user-adjustable, so weekly rate movement doesn't require a deploy."
+  }
+}
