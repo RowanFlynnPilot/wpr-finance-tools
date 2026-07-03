@@ -808,6 +808,13 @@
     "verified": false
   },
 
+  "sponsor": {
+    "name": null,
+    "url": null,
+    "logo": null,
+    "note": "All null until a sponsor signs — the widget then shows the dashed placeholder pitch. When set: name (and optional logo, as a data: URI or bundled asset path) replaces the placeholder, and the 'Talk to a local lender' tag links to url. name and url must be set together. The 'presented by' disclosure tag always renders — editorial-integrity requirement, not decoration."
+  },
+
   "loan_defaults": {
     "rate_pct": 6.5,
     "term_years": 30,

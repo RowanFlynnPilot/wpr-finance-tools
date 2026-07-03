@@ -277,6 +277,39 @@ input[type='range'].tcc-range {
   color: #6b6558;
 }
 
+.tcc-share {
+  margin-top: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: #3a867c;
+  background: transparent;
+  border: 1.5px solid #3a867c;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+.tcc-share:hover {
+  background: #3a867c;
+  color: #f6f2e9;
+}
+.tcc-share:focus-visible {
+  outline: 2px solid #3a867c;
+  outline-offset: 2px;
+}
+
+.tcc-sponsor-logo {
+  height: 20px;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+a.tcc-sponsor-link {
+  color: inherit;
+  text-decoration: none;
+}
+a.tcc-sponsor-link:hover {
+  text-decoration: underline;
+}
+
 .tcc-foot {
   margin-top: 22px;
   padding-top: 12px;

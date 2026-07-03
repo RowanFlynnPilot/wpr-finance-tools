@@ -30,6 +30,9 @@ import CONSTANTS from './local-constants.json'
     c?.closing_costs?.buyer_rate_of_price > 0,
     c?.loan_defaults?.rate_pct > 0 && c?.loan_defaults?.term_years > 0,
     c?.affordability?.front_end_dti > 0 && c.affordability.front_end_dti < 1,
+    typeof c?.sponsor === 'object' &&
+      c.sponsor !== null &&
+      (c.sponsor.name === null) === (c.sponsor.url === null),
   ]
   if (!checks.every(Boolean)) {
     throw new Error(
@@ -80,16 +83,63 @@ function monthlyPI(principal, annualRatePct, termYears) {
   return (principal * r * f) / (f - 1)
 }
 
+// Shared-scenario links: sliders and dropdown state round-trip through the URL
+// query string so a configured view can be sent as a plain link.
+const urlState = (() => {
+  const q = new URLSearchParams(window.location.search)
+  const num = (k, min, max) => {
+    const v = Number(q.get(k))
+    return q.has(k) && Number.isFinite(v) && v >= min && v <= max ? v : null
+  }
+  return {
+    price: num('p', 80000, 600000),
+    down: num('d', 3, 40),
+    rate: num('r', 4, 9),
+    term: [30, 15].includes(Number(q.get('t'))) ? Number(q.get('t')) : null,
+    muni: q.get('m'),
+    primary: q.get('pr') === '1' ? true : q.get('pr') === '0' ? false : null,
+  }
+})()
+
 export default function TrueCostCalculator() {
   const median = CONSTANTS.market.median_sale_price.value
   const munis = CONSTANTS.property_tax.municipalities
+  const sponsor = CONSTANTS.sponsor
 
-  const [price, setPrice] = useState(median)
-  const [downPct, setDownPct] = useState(CONSTANTS.loan_defaults.down_payment_pct)
-  const [ratePct, setRatePct] = useState(CONSTANTS.loan_defaults.rate_pct)
-  const [termYears, setTermYears] = useState(CONSTANTS.loan_defaults.term_years)
-  const [muniId, setMuniId] = useState(munis[0].id)
-  const [primaryRes, setPrimaryRes] = useState(true)
+  const [price, setPrice] = useState(urlState.price ?? median)
+  const [downPct, setDownPct] = useState(urlState.down ?? CONSTANTS.loan_defaults.down_payment_pct)
+  const [ratePct, setRatePct] = useState(urlState.rate ?? CONSTANTS.loan_defaults.rate_pct)
+  const [termYears, setTermYears] = useState(urlState.term ?? CONSTANTS.loan_defaults.term_years)
+  const [muniId, setMuniId] = useState(
+    munis.some((m) => m.id === urlState.muni) ? urlState.muni : munis[0].id,
+  )
+  const [primaryRes, setPrimaryRes] = useState(urlState.primary ?? true)
+  const [copied, setCopied] = useState(false)
+
+  const shareScenario = () => {
+    const q = new URLSearchParams({
+      p: price, d: downPct, r: ratePct, t: termYears, m: muniId, pr: primaryRes ? '1' : '0',
+    })
+    const url = `${window.location.origin}${window.location.pathname}?${q}`
+    const flash = () => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2500)
+    }
+    const legacyCopy = () => {
+      const ta = document.createElement('textarea')
+      ta.value = url
+      document.body.appendChild(ta)
+      ta.select()
+      document.execCommand('copy')
+      ta.remove()
+      flash()
+    }
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(url).then(flash).catch(legacyCopy)
+    } else {
+      legacyCopy()
+    }
+  }
 
   const out = useMemo(() => {
     const muni = munis.find((m) => m.id === muniId)
@@ -332,6 +382,9 @@ export default function TrueCostCalculator() {
               If rates move a point: {usd(out.totalLo)}/mo at {(ratePct - 1).toFixed(2)}% ·{' '}
               {usd(out.totalHi)}/mo at {(ratePct + 1).toFixed(2)}%
             </div>
+            <button className="tcc-share" onClick={shareScenario}>
+              {copied ? 'Link copied ✓' : 'Share this scenario →'}
+            </button>
           </div>
         </div>
       </div>
@@ -354,9 +407,24 @@ export default function TrueCostCalculator() {
       <div className="tcc-sponsor">
         <div>
           <div className="tag">Homebuyer tools presented by</div>
-          <div className="name">Your credit union here</div>
+          <div className="name">
+            {sponsor.name ? (
+              <>
+                {sponsor.logo && <img className="tcc-sponsor-logo" src={sponsor.logo} alt="" />}
+                {sponsor.name}
+              </>
+            ) : (
+              'Your credit union here'
+            )}
+          </div>
         </div>
-        <div className="tag">Talk to a local lender →</div>
+        {sponsor.url ? (
+          <a className="tag tcc-sponsor-link" href={sponsor.url} target="_blank" rel="sponsored noopener">
+            Talk to a local lender →
+          </a>
+        ) : (
+          <div className="tag">Talk to a local lender →</div>
+        )}
       </div>
     </div>
   )
