@@ -295,6 +295,34 @@ input[type='range'].tcc-range {
   color: #6b6558;
 }
 
+.tcc-typical {
+  margin-top: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #6b6558;
+}
+.tcc-typical .num {
+  color: #1a1a1a;
+  font-weight: 600;
+}
+.tcc-use {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: #3a867c;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin-left: 8px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.tcc-use:focus-visible {
+  outline: 2px solid #3a867c;
+  outline-offset: 2px;
+}
+
 .tcc-share {
   margin-top: 12px;
   font-family: 'JetBrains Mono', monospace;

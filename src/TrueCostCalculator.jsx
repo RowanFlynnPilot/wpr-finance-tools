@@ -7,6 +7,13 @@ import CONSTANTS from './local-constants.json'
     c?.market?.median_sale_price?.value > 0,
     typeof c?.market?.median_sale_price?.note === 'string' &&
       c.market.median_sale_price.note.length > 0,
+    typeof c?.market?.municipal_typical_prices?.values === 'object' &&
+      Object.entries(c.market.municipal_typical_prices.values).every(
+        ([id, t]) =>
+          t.median > 0 &&
+          t.n > 0 &&
+          c.property_tax.municipalities.some((m) => m.id === id),
+      ),
     Array.isArray(c?.market?.median_trend?.months) &&
       Array.isArray(c?.market?.median_trend?.medians) &&
       c.market.median_trend.months.length >= 2 &&
@@ -317,6 +324,27 @@ export default function TrueCostCalculator() {
               />
               <span>This will be my primary residence (lottery credit applied)</span>
             </label>
+            {CONSTANTS.market.municipal_typical_prices.values[muniId] ? (
+              <div className="tcc-typical">
+                Typical sale here:{' '}
+                <span className="num">
+                  {usd(CONSTANTS.market.municipal_typical_prices.values[muniId].median)}
+                </span>{' '}
+                ({CONSTANTS.market.municipal_typical_prices.values[muniId].n} sales, 12 mo)
+                <button
+                  className="tcc-use"
+                  onClick={() =>
+                    setPrice(CONSTANTS.market.municipal_typical_prices.values[muniId].median)
+                  }
+                >
+                  Use it →
+                </button>
+              </div>
+            ) : (
+              <div className="tcc-typical">
+                Too few recent sales here for a local median — county-wide default shown.
+              </div>
+            )}
           </div>
         </div>
 

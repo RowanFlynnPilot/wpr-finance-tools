@@ -2,7 +2,7 @@
   "_meta": {
     "name": "wpr-finance-tools local constants",
     "geography": "Marathon County, WI",
-    "updated": "2026-07-01",
+    "updated": "2026-07-03",
     "update_cadence": "quarterly",
     "update_process": "market.* from wpr-property-transactions ledger; property_tax.* verified against Marathon County Treasurer mill-rate publication each December; insurance/loan defaults reviewed manually",
     "contract_rule": "Widgets import this file at build time. Every consuming widget MUST validate required keys at module load and throw on any missing key. No runtime fetch, no fallback values."
@@ -17,13 +17,114 @@
       "verified": false
     },
     "median_trend": {
-      "months": ["2025-08", "2025-09", "2025-10", "2025-11", "2025-12", "2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06"],
-      "medians": [264900, 250000, 220000, 255750, 235000, 215000, 210000, 260400, 215000, 226000, 259000],
-      "counts": [177, 196, 227, 180, 150, 122, 84, 169, 171, 151, 249],
+      "months": [
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06"
+      ],
+      "medians": [
+        264900,
+        250000,
+        220000,
+        255750,
+        235000,
+        215000,
+        210000,
+        260400,
+        215000,
+        226000,
+        259000
+      ],
+      "counts": [
+        177,
+        196,
+        227,
+        180,
+        150,
+        122,
+        84,
+        169,
+        171,
+        151,
+        249
+      ],
       "note": "Monthly median of Marathon County single-family sales (the transactions widget's Residential group). Complete months only — the in-progress month is excluded until it closes.",
       "source": "wpr-property-transactions data/price_history.json generated 2026-07-02, series.Residential.Marathon",
       "as_of": "Aug 2025 – Jun 2026",
       "verified": false
+    },
+    "municipal_typical_prices": {
+      "note": "Trailing-12-month single-family median per municipality, published only where the sample is >= 30 sales (editorial threshold, approved 2026-07-03). Municipalities not listed fall back to the county-wide median, labeled as such in the UI. Final month of the window is partial.",
+      "window": "2025-08 to 2026-07",
+      "source": "wpr-property-transactions data/muni_medians.json generated 2026-07-03 (DOR RETR, editorial policy applied, property_use = Single family)",
+      "as_of": "2026-07-03",
+      "verified": false,
+      "values": {
+        "village-athens": {
+          "median": 168000,
+          "n": 33
+        },
+        "town-cleveland": {
+          "median": 205000,
+          "n": 33
+        },
+        "town-knowlton": {
+          "median": 354000,
+          "n": 31
+        },
+        "village-kronenwetter": {
+          "median": 331000,
+          "n": 100
+        },
+        "village-maine": {
+          "median": 155000,
+          "n": 39
+        },
+        "village-marathon-city": {
+          "median": 252500,
+          "n": 30
+        },
+        "city-mosinee": {
+          "median": 235000,
+          "n": 76
+        },
+        "village-rib-mountain": {
+          "median": 325000,
+          "n": 97
+        },
+        "village-rothschild": {
+          "median": 253250,
+          "n": 84
+        },
+        "city-schofield": {
+          "median": 185000,
+          "n": 41
+        },
+        "village-spencer": {
+          "median": 193000,
+          "n": 39
+        },
+        "town-stettin": {
+          "median": 469950,
+          "n": 36
+        },
+        "city-wausau": {
+          "median": 195000,
+          "n": 551
+        },
+        "village-weston": {
+          "median": 313200,
+          "n": 196
+        }
+      }
     }
   },
 

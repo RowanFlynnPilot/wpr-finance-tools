@@ -16,6 +16,13 @@ import CONSTANTS from './local-constants.json'
     c?.closing_costs?.buyer_rate_of_price > 0,
     c?.loan_defaults?.rate_pct > 0 && c?.loan_defaults?.term_years > 0,
     c?.rent?.median_rent_monthly?.value > 0,
+    typeof c?.market?.municipal_typical_prices?.values === 'object' &&
+      Object.entries(c.market.municipal_typical_prices.values).every(
+        ([id, t]) =>
+          t.median > 0 &&
+          t.n > 0 &&
+          c.property_tax.municipalities.some((m) => m.id === id),
+      ),
     c?.rent?.rent_growth_pct >= 0,
     c?.rent?.investment_return_pct >= 0,
   ]
@@ -190,6 +197,27 @@ export default function RentVsBuyCalculator() {
                 </optgroup>
               ))}
             </select>
+            {CONSTANTS.market.municipal_typical_prices.values[muniId] ? (
+              <div className="tcc-typical">
+                Typical sale here:{' '}
+                <span className="num">
+                  {usd(CONSTANTS.market.municipal_typical_prices.values[muniId].median)}
+                </span>{' '}
+                ({CONSTANTS.market.municipal_typical_prices.values[muniId].n} sales, 12 mo)
+                <button
+                  className="tcc-use"
+                  onClick={() =>
+                    setPrice(CONSTANTS.market.municipal_typical_prices.values[muniId].median)
+                  }
+                >
+                  Use it →
+                </button>
+              </div>
+            ) : (
+              <div className="tcc-typical">
+                Too few recent sales here for a local median — county-wide default shown.
+              </div>
+            )}
           </div>
 
           <div className="tcc-field">
