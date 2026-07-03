@@ -177,6 +177,24 @@ input[type='range'].tcc-range {
   margin-right: 8px;
 }
 
+.tcc-side-head {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #3a867c;
+  font-weight: 600;
+  margin: 12px 0 8px;
+}
+.tcc-side-head:first-of-type {
+  margin-top: 0;
+}
+.tcc-row-net {
+  font-weight: 700;
+  border-top: 1px solid #cfc8b8;
+  padding-top: 7px;
+}
+
 .tcc-total {
   display: flex;
   justify-content: space-between;

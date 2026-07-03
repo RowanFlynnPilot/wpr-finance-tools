@@ -2,7 +2,8 @@
 
 Sponsor-funded financial calculators for Wausau Pilot & Review, seeded with real
 Marathon County data from WPR's own pipelines. Calculator 1 is **The True Cost of
-Buying in Marathon County**. Calculator 2 (rent-vs-buy) is planned, not started.
+Buying in Marathon County**. Calculator 2 is **Rent or Buy in Marathon County?**
+— same bundle, mounted via `?tool=rentvsbuy`.
 
 Live: https://rowanflynnpilot.github.io/wpr-finance-tools/
 Embedded in WordPress via iframe, same as every other WPR widget.
@@ -10,10 +11,11 @@ Embedded in WordPress via iframe, same as every other WPR widget.
 ## Architecture
 
 ```
-src/local-constants.json   ← THE data contract. Single source of all local numbers.
-src/TrueCostCalculator.jsx ← Calculator 1. Imports constants at BUILD time.
-src/truecost.css           ← All styling. WPR design system.
-src/main.jsx               ← Mounts the calculator. Nothing else.
+src/local-constants.json     ← THE data contract. Single source of all local numbers.
+src/TrueCostCalculator.jsx   ← Calculator 1. Imports constants at BUILD time.
+src/RentVsBuyCalculator.jsx  ← Calculator 2. Same contract, same validation rules.
+src/truecost.css             ← All styling. WPR design system.
+src/main.jsx                 ← Mounts one calculator by ?tool= param. Nothing else.
 ```
 
 There is **no scraper, no cron, no runtime fetch, no backend**. This repo is
@@ -77,12 +79,16 @@ smaller, the answer is no.
 
 ## Roadmap
 
-1. **Now:** Verify seeded constants (median price from ledger; municipality
-   rates vs. treasurer publication), flip `verified` flags, launch.
-2. **Calculator 2 — rent-vs-buy:** reuses this exact contract; needs only a
-   `rent` block (median rent, annual rent growth assumption, investment-return
-   assumption for the down-payment opportunity cost). No structural changes.
-3. **Sponsor block** in constants once signed (see above).
+1. **Now:** Human review (Rowan or Shereen) of all constants — every value is
+   sourced (ledger / DOR / NAIC / HUD) but `verified` flags are still false.
+   Flip flags, launch.
+2. ~~Calculator 2 — rent-vs-buy~~ **Built (2026-07):** `?tool=rentvsbuy`, `rent`
+   block in the contract (HUD FY2026 FMR + two user-adjustable assumption
+   defaults). Model: level home price, owner-occupancy, renter invests the
+   would-be down payment; maintenance/utilities/selling costs not modeled
+   (stated in the footer).
+3. **Sponsor block** in constants once signed (see above) — wiring done
+   (2026-07); go-live is a one-commit constants edit.
 
 ## Deploy
 
@@ -99,4 +105,8 @@ WordPress embed:
 <iframe src="https://rowanflynnpilot.github.io/wpr-finance-tools/"
         style="width:100%;border:none;min-height:980px" loading="lazy"
         title="The true cost of buying in Marathon County"></iframe>
+
+<iframe src="https://rowanflynnpilot.github.io/wpr-finance-tools/?tool=rentvsbuy"
+        style="width:100%;border:none;min-height:1080px" loading="lazy"
+        title="Rent or buy in Marathon County?"></iframe>
 ```

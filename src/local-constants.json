@@ -815,6 +815,19 @@
     "note": "All null until a sponsor signs — the widget then shows the dashed placeholder pitch. When set: name (and optional logo, as a data: URI or bundled asset path) replaces the placeholder, and the 'Talk to a local lender' tag links to url. name and url must be set together. The 'presented by' disclosure tag always renders — editorial-integrity requirement, not decoration."
   },
 
+  "rent": {
+    "median_rent_monthly": {
+      "value": 1511,
+      "note": "HUD FY2026 Fair Market Rent for a 3-bedroom in the Wausau, WI MSA (exactly Marathon County) — the comparable rental for a single-family purchase. 2BR is $1,147. FMR is roughly the 40th-percentile gross rent and includes utilities.",
+      "source": "HUD FY26 FMRs, huduser.gov (fmr2026/FY26_FMRs.xlsx), row 'Wausau, WI MSA'",
+      "as_of": "FY2026, effective 2025-10-01",
+      "verified": false
+    },
+    "rent_growth_pct": 3.0,
+    "investment_return_pct": 4.0,
+    "assumptions_note": "rent_growth_pct and investment_return_pct are UI starting values only — user-adjustable assumptions for annual rent inflation and the return earned on an invested down payment. Editorial defaults, not measurements."
+  },
+
   "loan_defaults": {
     "rate_pct": 6.5,
     "term_years": 30,
