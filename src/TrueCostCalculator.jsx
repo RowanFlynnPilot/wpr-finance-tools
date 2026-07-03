@@ -15,6 +15,7 @@ import CONSTANTS from './local-constants.json'
     c?.pmi?.annual_rate_of_loan > 0 && c?.pmi?.ltv_threshold > 0,
     c?.closing_costs?.buyer_rate_of_price > 0,
     c?.loan_defaults?.rate_pct > 0 && c?.loan_defaults?.term_years > 0,
+    c?.affordability?.front_end_dti > 0 && c.affordability.front_end_dti < 1,
   ]
   if (!checks.every(Boolean)) {
     throw new Error(
@@ -58,7 +59,23 @@ export default function TrueCostCalculator() {
     const total = pi + tax + ins + pmi
     const closing = price * CONSTANTS.closing_costs.buyer_rate_of_price
 
-    return { muni, down, loan, pi, tax, ins, pmi, total, closing, cashToClose: down + closing }
+    // Loan balance after 5 years; equity assumes a level home price (no appreciation)
+    const r = ratePct / 100 / 12
+    const k = Math.pow(1 + r, 60)
+    const balance5 = r === 0 ? loan - pi * 60 : loan * k - (pi * (k - 1)) / r
+    const equity5 = price - Math.max(balance5, 0)
+    const interestLife = pi * termYears * 12 - loan
+    const incomeNeeded = (total / CONSTANTS.affordability.front_end_dti) * 12
+    const totalAt = (rp) => monthlyPI(loan, rp, termYears) + tax + ins + pmi
+
+    return {
+      muni, down, loan, pi, tax, ins, pmi, total, closing,
+      cashToClose: down + closing,
+      taxAnnual: price * muni.effective_rate,
+      equity5, interestLife, incomeNeeded,
+      totalLo: totalAt(ratePct - 1),
+      totalHi: totalAt(ratePct + 1),
+    }
   }, [price, downPct, ratePct, termYears, muniId, munis])
 
   const bars = [
@@ -217,6 +234,33 @@ export default function TrueCostCalculator() {
             ({usd(out.down)} down + ~{usd(out.closing)} closing costs)
             {out.pmi > 0 && <> · PMI drops off at 20% equity</>}
           </div>
+
+          <div className="tcc-extras">
+            <div className="tcc-xrow">
+              <span>Income to afford this</span>
+              <span className="dot" />
+              <span className="num">~{usd(Math.round(out.incomeNeeded / 1000) * 1000)}/yr</span>
+            </div>
+            <div className="tcc-xrow">
+              <span>Equity after 5 years</span>
+              <span className="dot" />
+              <span className="num">{usd(out.equity5)}</span>
+            </div>
+            <div className="tcc-xrow">
+              <span>Lifetime interest ({termYears} yr)</span>
+              <span className="dot" />
+              <span className="num">{usd(out.interestLife)}</span>
+            </div>
+            <div className="tcc-xrow">
+              <span>Property tax per year</span>
+              <span className="dot" />
+              <span className="num">{usd(out.taxAnnual)}</span>
+            </div>
+            <div className="tcc-sens">
+              If rates move a point: {usd(out.totalLo)}/mo at {(ratePct - 1).toFixed(2)}% ·{' '}
+              {usd(out.totalHi)}/mo at {(ratePct + 1).toFixed(2)}%
+            </div>
+          </div>
         </div>
       </div>
 
@@ -224,7 +268,9 @@ export default function TrueCostCalculator() {
         Estimates only — not a loan offer or financial advice. Property tax uses each
         municipality's effective full-value rate (total levy less the school levy credit ÷
         equalized value) from the Wisconsin DOR's 2025 Town, Village and City Taxes report; your
-        assessed bill will differ, and lottery and first-dollar credits may lower it. Insurance
+        assessed bill will differ, and lottery and first-dollar credits may lower it. Income
+        needed applies the standard 28% housing-cost-to-income ratio; equity assumes a level home
+        price. Insurance
         estimated at Wisconsin's average premium relative to home value. Median sale price computed
         from Wisconsin DOR transfer records via WPR's property transaction data. Updated{' '}
         {CONSTANTS._meta.updated}.

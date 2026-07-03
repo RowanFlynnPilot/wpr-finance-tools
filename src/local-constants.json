@@ -593,6 +593,12 @@
     "verified": true
   },
 
+  "affordability": {
+    "front_end_dti": 0.28,
+    "note": "Max share of gross income spent on housing (PITI + PMI) — the standard 28% front-end ratio. Industry convention, not lender-specific; drives the 'income to afford this' line.",
+    "verified": false
+  },
+
   "loan_defaults": {
     "rate_pct": 6.5,
     "term_years": 30,
