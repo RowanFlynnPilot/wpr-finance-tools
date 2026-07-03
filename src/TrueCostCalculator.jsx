@@ -11,6 +11,9 @@ import CONSTANTS from './local-constants.json'
     c.property_tax?.municipalities?.every(
       (m) => m.id && m.name && m.effective_rate > 0 && ['city', 'village', 'town'].includes(m.type),
     ),
+    c.property_tax?.municipalities?.every(
+      (m) => m.lottery_credit > 0 && m.first_dollar_credit > 0,
+    ),
     c?.insurance?.annual_rate_of_price > 0,
     c?.pmi?.annual_rate_of_loan > 0 && c?.pmi?.ltv_threshold > 0,
     c?.closing_costs?.buyer_rate_of_price > 0,
@@ -44,6 +47,7 @@ export default function TrueCostCalculator() {
   const [ratePct, setRatePct] = useState(CONSTANTS.loan_defaults.rate_pct)
   const [termYears, setTermYears] = useState(CONSTANTS.loan_defaults.term_years)
   const [muniId, setMuniId] = useState(munis[0].id)
+  const [primaryRes, setPrimaryRes] = useState(true)
 
   const out = useMemo(() => {
     const muni = munis.find((m) => m.id === muniId)
@@ -52,7 +56,14 @@ export default function TrueCostCalculator() {
     const ltv = loan / price
 
     const pi = monthlyPI(loan, ratePct, termYears)
-    const tax = (price * muni.effective_rate) / 12
+    // First dollar credit applies to any improved parcel; lottery credit to primary residences
+    const taxAnnual = Math.max(
+      0,
+      price * muni.effective_rate -
+        muni.first_dollar_credit -
+        (primaryRes ? muni.lottery_credit : 0),
+    )
+    const tax = taxAnnual / 12
     const ins = (price * CONSTANTS.insurance.annual_rate_of_price) / 12
     const pmi =
       ltv > CONSTANTS.pmi.ltv_threshold ? (loan * CONSTANTS.pmi.annual_rate_of_loan) / 12 : 0
@@ -71,12 +82,12 @@ export default function TrueCostCalculator() {
     return {
       muni, down, loan, pi, tax, ins, pmi, total, closing,
       cashToClose: down + closing,
-      taxAnnual: price * muni.effective_rate,
+      taxAnnual,
       equity5, interestLife, incomeNeeded,
       totalLo: totalAt(ratePct - 1),
       totalHi: totalAt(ratePct + 1),
     }
-  }, [price, downPct, ratePct, termYears, muniId, munis])
+  }, [price, downPct, ratePct, termYears, muniId, munis, primaryRes])
 
   const bars = [
     { label: 'Principal & interest', value: out.pi, color: '#3A867C' },
@@ -195,6 +206,14 @@ export default function TrueCostCalculator() {
                 </optgroup>
               ))}
             </select>
+            <label className="tcc-check">
+              <input
+                type="checkbox"
+                checked={primaryRes}
+                onChange={(e) => setPrimaryRes(e.target.checked)}
+              />
+              <span>This will be my primary residence (lottery credit applied)</span>
+            </label>
           </div>
         </div>
 
@@ -268,7 +287,9 @@ export default function TrueCostCalculator() {
         Estimates only — not a loan offer or financial advice. Property tax uses each
         municipality's effective full-value rate (total levy less the school levy credit ÷
         equalized value) from the Wisconsin DOR's 2025 Town, Village and City Taxes report; your
-        assessed bill will differ, and lottery and first-dollar credits may lower it. Income
+        assessed bill will differ. The tax estimate subtracts the 2025–26 first dollar credit
+        and, for primary residences, the lottery &amp; gaming credit (school-district averages
+        where a municipality spans districts). Income
         needed applies the standard 28% housing-cost-to-income ratio; equity assumes a level home
         price. Insurance
         estimated at Wisconsin's average premium relative to home value. Median sale price computed
