@@ -7,6 +7,11 @@ import CONSTANTS from './local-constants.json'
     c?.market?.median_sale_price?.value > 0,
     typeof c?.market?.median_sale_price?.note === 'string' &&
       c.market.median_sale_price.note.length > 0,
+    Array.isArray(c?.market?.median_trend?.months) &&
+      Array.isArray(c?.market?.median_trend?.medians) &&
+      c.market.median_trend.months.length >= 2 &&
+      c.market.median_trend.months.length === c.market.median_trend.medians.length &&
+      c.market.median_trend.medians.every((v) => v > 0),
     Array.isArray(c?.property_tax?.municipalities) && c.property_tax.municipalities.length > 0,
     c.property_tax?.municipalities?.every(
       (m) => m.id && m.name && m.effective_rate > 0 && ['city', 'village', 'town'].includes(m.type),
@@ -29,6 +34,37 @@ import CONSTANTS from './local-constants.json'
 
 const usd = (n) =>
   n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
+
+const monthLabel = (ym) => {
+  const [y, m] = ym.split('-')
+  const name = new Date(Number(y), Number(m) - 1, 1).toLocaleString('en-US', { month: 'short' })
+  return `${name} '${y.slice(2)}`
+}
+
+function Sparkline({ values }) {
+  const W = 132
+  const H = 26
+  const pad = 2.5
+  const min = Math.min(...values)
+  const max = Math.max(...values)
+  const span = max - min || 1
+  const pts = values.map((v, i) => [
+    pad + (i / (values.length - 1)) * (W - 2 * pad),
+    H - pad - ((v - min) / span) * (H - 2 * pad),
+  ])
+  const last = pts[pts.length - 1]
+  return (
+    <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} aria-hidden="true">
+      <polyline
+        points={pts.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(' ')}
+        fill="none"
+        stroke="#3A867C"
+        strokeWidth="1.5"
+      />
+      <circle cx={last[0]} cy={last[1]} r="2.4" fill="#3A867C" />
+    </svg>
+  )
+}
 
 function monthlyPI(principal, annualRatePct, termYears) {
   const r = annualRatePct / 100 / 12
@@ -107,6 +143,15 @@ export default function TrueCostCalculator() {
         transaction records ({CONSTANTS.market.median_sale_price.as_of}).
       </p>
       <p className="tcc-method-note">{CONSTANTS.market.median_sale_price.note}</p>
+      <div className="tcc-trend">
+        <Sparkline values={CONSTANTS.market.median_trend.medians} />
+        <span>
+          Monthly medians {monthLabel(CONSTANTS.market.median_trend.months[0])} –{' '}
+          {monthLabel(CONSTANTS.market.median_trend.months.at(-1))}: low{' '}
+          {usd(Math.min(...CONSTANTS.market.median_trend.medians))} · high{' '}
+          {usd(Math.max(...CONSTANTS.market.median_trend.medians))}
+        </span>
+      </div>
 
       <div className="tcc-grid">
         <div>

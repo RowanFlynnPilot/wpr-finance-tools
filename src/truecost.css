@@ -41,8 +41,21 @@
   font-size: 11px;
   line-height: 1.5;
   color: #6b6558;
-  margin: -14px 0 22px;
+  margin: -14px 0 8px;
   max-width: 62ch;
+}
+.tcc-trend {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #6b6558;
+  margin: 0 0 22px;
+}
+.tcc-trend svg {
+  flex-shrink: 0;
 }
 
 .tcc-grid {

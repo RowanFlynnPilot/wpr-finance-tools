@@ -10,10 +10,19 @@
 
   "market": {
     "median_sale_price": {
-      "value": 250000,
-      "note": "Median of 207 single-family sales, including 22 vacant-lot sales (median $62,000) — built homes alone ran $271,000.",
-      "source": "wpr-property-transactions ledger, data/transactions.json generated 2026-06-18 (DOR RETR; editorial policy applied in-pipeline: genuine sales only, >= $1,000; filtered to county = Marathon, property_use = Single family)",
-      "as_of": "sales recorded May 19 – June 18, 2026",
+      "value": 249000,
+      "note": "Median of 236 single-family sales, including 18 vacant-lot sales (median $52,000) — built homes alone ran $275,000.",
+      "source": "wpr-property-transactions ledger, data/transactions.json generated 2026-07-02 (DOR RETR; editorial policy applied in-pipeline: genuine sales only, >= $1,000; filtered to county = Marathon, property_use = Single family)",
+      "as_of": "sales recorded June 2 – July 2, 2026",
+      "verified": false
+    },
+    "median_trend": {
+      "months": ["2025-08", "2025-09", "2025-10", "2025-11", "2025-12", "2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06"],
+      "medians": [264900, 250000, 220000, 255750, 235000, 215000, 210000, 260400, 215000, 226000, 259000],
+      "counts": [177, 196, 227, 180, 150, 122, 84, 169, 171, 151, 249],
+      "note": "Monthly median of Marathon County single-family sales (the transactions widget's Residential group). Complete months only — the in-progress month is excluded until it closes.",
+      "source": "wpr-property-transactions data/price_history.json generated 2026-07-02, series.Residential.Marathon",
+      "as_of": "Aug 2025 – Jun 2026",
       "verified": false
     }
   },
