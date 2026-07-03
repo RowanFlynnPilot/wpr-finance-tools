@@ -766,9 +766,26 @@
   },
 
   "insurance": {
-    "annual_rate_of_price": 0.0046,
-    "note": "WI homeowners premium as share of home value. Derived from ~$1,390/yr on $300K dwelling (MoneyGeek/ValuePenguin 2026 WI averages). Statewide sources range $1,386–$2,465 depending on coverage assumptions; this uses the $300K-dwelling consensus cluster.",
-    "as_of": "2026-01",
+    "premium_bands": [
+      { "up_to": 149999, "annual_premium": 481 },
+      { "up_to": 199999, "annual_premium": 687 },
+      { "up_to": 224999, "annual_premium": 740 },
+      { "up_to": 249999, "annual_premium": 774 },
+      { "up_to": 274999, "annual_premium": 804 },
+      { "up_to": 299999, "annual_premium": 834 },
+      { "up_to": 324999, "annual_premium": 863 },
+      { "up_to": 349999, "annual_premium": 893 },
+      { "up_to": 399999, "annual_premium": 936 },
+      { "up_to": 449999, "annual_premium": 1005 },
+      { "up_to": 499999, "annual_premium": 1072 },
+      { "up_to": 599999, "annual_premium": 1163 },
+      { "up_to": 699999, "annual_premium": 1303 },
+      { "up_to": 999999, "annual_premium": 1781 },
+      { "up_to": null, "annual_premium": 3154 }
+    ],
+    "note": "Wisconsin average annual premium by amount of insurance, all owner-occupied policy forms (Total column). Dwelling coverage amount is approximated by sale price in the calculator. 2022 is the latest state-level data insurers report to regulators; premiums have risen since — treat as a floor, and the footer discloses the vintage.",
+    "source": "NAIC Dwelling Fire, Homeowners Owner-Occupied, and Homeowners Tenant and Condominium/Cooperative Unit Owner's Insurance Report: Data for 2022 (published May 2025), Table 4, Wisconsin (https://content.naic.org/sites/default/files/publication-hmr-zu-homeowners-report.pdf)",
+    "as_of": "2022 data, published May 2025",
     "verified": false
   },
 

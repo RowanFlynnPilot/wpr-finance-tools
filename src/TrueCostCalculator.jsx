@@ -19,7 +19,13 @@ import CONSTANTS from './local-constants.json'
     c.property_tax?.municipalities?.every(
       (m) => m.lottery_credit > 0 && m.first_dollar_credit > 0,
     ),
-    c?.insurance?.annual_rate_of_price > 0,
+    Array.isArray(c?.insurance?.premium_bands) &&
+      c.insurance.premium_bands.length >= 2 &&
+      c.insurance.premium_bands.every((b) => b.annual_premium > 0) &&
+      c.insurance.premium_bands.at(-1).up_to === null &&
+      c.insurance.premium_bands
+        .slice(0, -1)
+        .every((b, i, a) => b.up_to > 0 && (i === 0 || b.up_to > a[i - 1].up_to)),
     c?.pmi?.annual_rate_of_loan > 0 && c?.pmi?.ltv_threshold > 0,
     c?.closing_costs?.buyer_rate_of_price > 0,
     c?.loan_defaults?.rate_pct > 0 && c?.loan_defaults?.term_years > 0,
@@ -100,7 +106,9 @@ export default function TrueCostCalculator() {
         (primaryRes ? muni.lottery_credit : 0),
     )
     const tax = taxAnnual / 12
-    const ins = (price * CONSTANTS.insurance.annual_rate_of_price) / 12
+    const ins =
+      CONSTANTS.insurance.premium_bands.find((b) => b.up_to === null || price <= b.up_to)
+        .annual_premium / 12
     const pmi =
       ltv > CONSTANTS.pmi.ltv_threshold ? (loan * CONSTANTS.pmi.annual_rate_of_loan) / 12 : 0
     const total = pi + tax + ins + pmi
@@ -336,9 +344,10 @@ export default function TrueCostCalculator() {
         and, for primary residences, the lottery &amp; gaming credit (school-district averages
         where a municipality spans districts). Income
         needed applies the standard 28% housing-cost-to-income ratio; equity assumes a level home
-        price. Insurance
-        estimated at Wisconsin's average premium relative to home value. Median sale price computed
-        from Wisconsin DOR transfer records via WPR's property transaction data. Updated{' '}
+        price. Insurance uses Wisconsin average premiums by coverage amount from the NAIC's latest
+        state report (2022 data — premiums have risen since, and quotes vary by home and insurer),
+        with dwelling coverage approximated by price. Median sale price computed from Wisconsin DOR
+        transfer records via WPR's property transaction data. Updated{' '}
         {CONSTANTS._meta.updated}.
       </div>
 
