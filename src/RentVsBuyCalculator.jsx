@@ -17,6 +17,7 @@ import CONSTANTS from './local-constants.json'
     c?.loan_defaults?.rate_pct > 0 && c?.loan_defaults?.term_years > 0,
     c?.rent?.median_rent_monthly?.value > 0,
     typeof c?.market?.municipal_typical_prices?.values === 'object' &&
+      c.market.municipal_typical_prices.low_sample_threshold > 0 &&
       Object.entries(c.market.municipal_typical_prices.values).every(
         ([id, t]) =>
           t.median > 0 &&
@@ -40,6 +41,32 @@ const usd = (n) =>
 const rangeBg = (v, min, max) => {
   const p = (((v - min) / (max - min)) * 100).toFixed(1)
   return { background: `linear-gradient(to right, #3A867C ${p}%, #ddd6c6 ${p}%)` }
+}
+
+function TypicalLine({ typical, threshold, onUse }) {
+  if (!typical) {
+    return (
+      <div className="tcc-typical">
+        No recorded single-family sales here in the past 12 months — county-wide default shown.
+      </div>
+    )
+  }
+  const small = typical.n < threshold
+  return (
+    <div className="tcc-typical">
+      Typical sale here: <span className="num">{usd(typical.median)}</span>{' '}
+      {small ? (
+        <span className="warn">
+          — small sample: only {typical.n} sale{typical.n === 1 ? '' : 's'} in 12 mo
+        </span>
+      ) : (
+        <>({typical.n} sales, 12 mo)</>
+      )}
+      <button className="tcc-use" onClick={() => onUse(typical.median)}>
+        Use it →
+      </button>
+    </div>
+  )
 }
 
 function monthlyPI(principal, annualRatePct, termYears) {
@@ -280,27 +307,11 @@ export default function RentVsBuyCalculator() {
                 </optgroup>
               ))}
             </select>
-            {CONSTANTS.market.municipal_typical_prices.values[muniId] ? (
-              <div className="tcc-typical">
-                Typical sale here:{' '}
-                <span className="num">
-                  {usd(CONSTANTS.market.municipal_typical_prices.values[muniId].median)}
-                </span>{' '}
-                ({CONSTANTS.market.municipal_typical_prices.values[muniId].n} sales, 12 mo)
-                <button
-                  className="tcc-use"
-                  onClick={() =>
-                    setPrice(CONSTANTS.market.municipal_typical_prices.values[muniId].median)
-                  }
-                >
-                  Use it →
-                </button>
-              </div>
-            ) : (
-              <div className="tcc-typical">
-                Too few recent sales here for a local median — county-wide default shown.
-              </div>
-            )}
+            <TypicalLine
+              typical={CONSTANTS.market.municipal_typical_prices.values[muniId]}
+              threshold={CONSTANTS.market.municipal_typical_prices.low_sample_threshold}
+              onUse={setPrice}
+            />
           </div>
 
           <div className="tcc-field">

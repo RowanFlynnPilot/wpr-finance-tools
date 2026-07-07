@@ -62,19 +62,132 @@
       "verified": false
     },
     "municipal_typical_prices": {
-      "note": "Trailing-12-month single-family median per municipality, published only where the sample is >= 30 sales (editorial threshold, approved 2026-07-03). Municipalities not listed fall back to the county-wide median, labeled as such in the UI. Final month of the window is partial.",
+      "note": "Trailing-12-month single-family median for every municipality with at least one recorded sale, each with its sample count. Entries with n < low_sample_threshold are flagged as small samples in the UI rather than hidden (editorial rule updated July 2026, superseding the original publish-only-at-n>=30 gate); municipalities with no sales in the window fall back to the county-wide median, labeled as such. Final month of the window is partial.",
+      "low_sample_threshold": 30,
       "window": "2025-08 to 2026-07",
       "source": "wpr-property-transactions data/muni_medians.json generated 2026-07-03 (DOR RETR, editorial policy applied, property_use = Single family)",
       "as_of": "2026-07-03",
       "verified": false,
       "values": {
+        "city-abbotsford": {
+          "median": 178000,
+          "n": 7
+        },
         "village-athens": {
           "median": 168000,
           "n": 33
         },
+        "town-bergen": {
+          "median": 240000,
+          "n": 13
+        },
+        "town-berlin": {
+          "median": 270000,
+          "n": 17
+        },
+        "town-bern": {
+          "median": 306750,
+          "n": 12
+        },
+        "town-bevent": {
+          "median": 192350,
+          "n": 12
+        },
+        "town-brighton": {
+          "median": 563800,
+          "n": 2
+        },
+        "town-cassel": {
+          "median": 305500,
+          "n": 6
+        },
         "town-cleveland": {
           "median": 205000,
           "n": 33
+        },
+        "city-colby": {
+          "median": 165000,
+          "n": 6
+        },
+        "town-day": {
+          "median": 237500,
+          "n": 8
+        },
+        "town-easton": {
+          "median": 200000,
+          "n": 16
+        },
+        "town-eau-pleine": {
+          "median": 250000,
+          "n": 13
+        },
+        "village-edgar": {
+          "median": 217500,
+          "n": 20
+        },
+        "town-elderon": {
+          "median": 198000,
+          "n": 9
+        },
+        "village-elderon": {
+          "median": 190000,
+          "n": 3
+        },
+        "town-emmet": {
+          "median": 160000,
+          "n": 15
+        },
+        "village-fenwood": {
+          "median": 125000,
+          "n": 7
+        },
+        "town-frankfort": {
+          "median": 297500,
+          "n": 6
+        },
+        "town-franzen": {
+          "median": 200000,
+          "n": 10
+        },
+        "town-green-valley": {
+          "median": 232000,
+          "n": 9
+        },
+        "town-guenther": {
+          "median": 199500,
+          "n": 2
+        },
+        "town-halsey": {
+          "median": 200000,
+          "n": 11
+        },
+        "town-hamburg": {
+          "median": 150000,
+          "n": 9
+        },
+        "town-harrison": {
+          "median": 100612,
+          "n": 5
+        },
+        "village-hatley": {
+          "median": 85000,
+          "n": 8
+        },
+        "town-hewitt": {
+          "median": 270000,
+          "n": 11
+        },
+        "town-holton": {
+          "median": 252500,
+          "n": 14
+        },
+        "town-hull": {
+          "median": 305000,
+          "n": 13
+        },
+        "town-johnson": {
+          "median": 181500,
+          "n": 8
         },
         "town-knowlton": {
           "median": 354000,
@@ -92,13 +205,53 @@
           "median": 252500,
           "n": 30
         },
+        "town-marathon": {
+          "median": 337000,
+          "n": 9
+        },
+        "city-marshfield": {
+          "median": 225000,
+          "n": 11
+        },
+        "town-mcmillan": {
+          "median": 365000,
+          "n": 27
+        },
         "city-mosinee": {
           "median": 235000,
           "n": 76
         },
+        "town-mosinee": {
+          "median": 240000,
+          "n": 27
+        },
+        "town-norrie": {
+          "median": 280250,
+          "n": 13
+        },
+        "town-plover": {
+          "median": 245000,
+          "n": 12
+        },
+        "town-reid": {
+          "median": 210000,
+          "n": 17
+        },
+        "town-rib-falls": {
+          "median": 167500,
+          "n": 4
+        },
         "village-rib-mountain": {
           "median": 325000,
           "n": 97
+        },
+        "town-rietbrock": {
+          "median": 216250,
+          "n": 2
+        },
+        "town-ringle": {
+          "median": 327500,
+          "n": 18
         },
         "village-rothschild": {
           "median": 253250,
@@ -108,6 +261,10 @@
           "median": 185000,
           "n": 41
         },
+        "town-spencer": {
+          "median": 170000,
+          "n": 25
+        },
         "village-spencer": {
           "median": 193000,
           "n": 39
@@ -116,13 +273,37 @@
           "median": 469950,
           "n": 36
         },
+        "village-stratford": {
+          "median": 197500,
+          "n": 18
+        },
+        "town-texas": {
+          "median": 250500,
+          "n": 20
+        },
+        "village-unity": {
+          "median": 166500,
+          "n": 2
+        },
         "city-wausau": {
           "median": 195000,
           "n": 551
         },
+        "town-wausau": {
+          "median": 262500,
+          "n": 26
+        },
+        "town-weston": {
+          "median": 432000,
+          "n": 10
+        },
         "village-weston": {
           "median": 313200,
           "n": 196
+        },
+        "town-wien": {
+          "median": 200000,
+          "n": 9
         }
       }
     },

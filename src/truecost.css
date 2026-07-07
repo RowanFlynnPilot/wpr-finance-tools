@@ -364,6 +364,9 @@ input[type='range'].tcc-range:hover::-moz-range-thumb {
   color: #1a1a1a;
   font-weight: 600;
 }
+.tcc-typical .warn {
+  color: #8a6d3b;
+}
 .tcc-use {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;

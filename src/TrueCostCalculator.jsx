@@ -14,6 +14,7 @@ import CONSTANTS from './local-constants.json'
           v.median > 0 && c.property_tax.municipalities.some((m) => m.id === id),
       ),
     typeof c?.market?.municipal_typical_prices?.values === 'object' &&
+      c.market.municipal_typical_prices.low_sample_threshold > 0 &&
       Object.entries(c.market.municipal_typical_prices.values).every(
         ([id, t]) =>
           t.median > 0 &&
@@ -231,6 +232,32 @@ function TrendChart({ months, medians, counts }) {
   )
 }
 
+function TypicalLine({ typical, threshold, onUse }) {
+  if (!typical) {
+    return (
+      <div className="tcc-typical">
+        No recorded single-family sales here in the past 12 months — county-wide default shown.
+      </div>
+    )
+  }
+  const small = typical.n < threshold
+  return (
+    <div className="tcc-typical">
+      Typical sale here: <span className="num">{usd(typical.median)}</span>{' '}
+      {small ? (
+        <span className="warn">
+          — small sample: only {typical.n} sale{typical.n === 1 ? '' : 's'} in 12 mo
+        </span>
+      ) : (
+        <>({typical.n} sales, 12 mo)</>
+      )}
+      <button className="tcc-use" onClick={() => onUse(typical.median)}>
+        Use it →
+      </button>
+    </div>
+  )
+}
+
 function CompareBars({ label, hereValue, countyValue, format, hereExtra, fallbackNote }) {
   const scale = Math.max(hereValue ?? 0, countyValue)
   const bar = (v) => `${Math.max((v / scale) * 100, 2).toFixed(1)}%`
@@ -280,7 +307,12 @@ function GlancePanel({ muni }) {
         hereValue={typical ? typical.median : null}
         countyValue={countyPrice}
         format={usd}
-        fallbackNote="too few local sales for a figure here"
+        hereExtra={
+          typical && typical.n < CONSTANTS.market.municipal_typical_prices.low_sample_threshold
+            ? `only ${typical.n} sale${typical.n === 1 ? '' : 's'}`
+            : null
+        }
+        fallbackNote="no recorded sales here in the past 12 months"
       />
       <CompareBars
         label="Median household income"
@@ -600,27 +632,11 @@ export default function TrueCostCalculator() {
               />
               <span>This will be my primary residence (lottery credit applied)</span>
             </label>
-            {CONSTANTS.market.municipal_typical_prices.values[muniId] ? (
-              <div className="tcc-typical">
-                Typical sale here:{' '}
-                <span className="num">
-                  {usd(CONSTANTS.market.municipal_typical_prices.values[muniId].median)}
-                </span>{' '}
-                ({CONSTANTS.market.municipal_typical_prices.values[muniId].n} sales, 12 mo)
-                <button
-                  className="tcc-use"
-                  onClick={() =>
-                    setPrice(CONSTANTS.market.municipal_typical_prices.values[muniId].median)
-                  }
-                >
-                  Use it →
-                </button>
-              </div>
-            ) : (
-              <div className="tcc-typical">
-                Too few recent sales here for a local median — county-wide default shown.
-              </div>
-            )}
+            <TypicalLine
+              typical={CONSTANTS.market.municipal_typical_prices.values[muniId]}
+              threshold={CONSTANTS.market.municipal_typical_prices.low_sample_threshold}
+              onUse={setPrice}
+            />
           </div>
 
           <GlancePanel muni={out.muni} />
