@@ -57,6 +57,24 @@
 .tcc-trend svg {
   flex-shrink: 0;
 }
+.tcc-trend-big {
+  margin: 0 0 22px;
+  border: 1.5px solid #1a1a1a;
+  background: #fffdf8;
+  padding: 12px 12px 8px;
+  box-shadow: 5px 5px 0 rgba(26, 26, 26, 0.08);
+}
+.tcc-trend-caption {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #6b6558;
+}
 
 .tcc-grid {
   display: grid;
@@ -92,9 +110,36 @@
 }
 
 input[type='range'].tcc-range {
+  -webkit-appearance: none;
+  appearance: none;
   width: 100%;
-  accent-color: #3a867c;
-  height: 22px;
+  height: 6px;
+  margin: 9px 0;
+  background: #ddd6c6; /* overridden inline with the filled-track gradient */
+  border: 1px solid rgba(26, 26, 26, 0.2);
+  cursor: pointer;
+}
+input[type='range'].tcc-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #3a867c;
+  border: 1.5px solid #1a1a1a;
+  border-radius: 0;
+}
+input[type='range'].tcc-range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #3a867c;
+  border: 1.5px solid #1a1a1a;
+  border-radius: 0;
+}
+input[type='range'].tcc-range:hover::-webkit-slider-thumb {
+  background: #4aaba7;
+}
+input[type='range'].tcc-range:hover::-moz-range-thumb {
+  background: #4aaba7;
 }
 
 .tcc-select {
@@ -143,6 +188,7 @@ input[type='range'].tcc-range {
   border: 1.5px solid #1a1a1a;
   background: #fffdf8;
   padding: 18px 18px 14px;
+  box-shadow: 5px 5px 0 rgba(26, 26, 26, 0.08);
 }
 .tcc-ledger-head {
   font-family: 'JetBrains Mono', monospace;
@@ -175,6 +221,9 @@ input[type='range'].tcc-range {
   width: 9px;
   height: 9px;
   margin-right: 8px;
+}
+.tcc-row:hover {
+  background: rgba(58, 134, 124, 0.07);
 }
 
 .tcc-side-head {
@@ -224,7 +273,7 @@ input[type='range'].tcc-range {
 
 .tcc-bar {
   display: flex;
-  height: 14px;
+  height: 16px;
   margin: 14px 0 6px;
   border: 1.5px solid #1a1a1a;
 }

@@ -36,6 +36,12 @@ import CONSTANTS from './local-constants.json'
 const usd = (n) =>
   n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
 
+// Filled-track slider background: teal up to the thumb, parchment beyond it
+const rangeBg = (v, min, max) => {
+  const p = (((v - min) / (max - min)) * 100).toFixed(1)
+  return { background: `linear-gradient(to right, #3A867C ${p}%, #ddd6c6 ${p}%)` }
+}
+
 function monthlyPI(principal, annualRatePct, termYears) {
   const r = annualRatePct / 100 / 12
   const n = termYears * 12
@@ -204,6 +210,7 @@ export default function RentVsBuyCalculator() {
               onChange={(e) => setPrice(Number(e.target.value))}
               aria-label="Home price"
               aria-valuetext={usd(price)}
+              style={rangeBg(price, 80000, 600000)}
             />
           </div>
 
@@ -224,6 +231,7 @@ export default function RentVsBuyCalculator() {
               onChange={(e) => setDownPct(Number(e.target.value))}
               aria-label="Down payment percent"
               aria-valuetext={`${downPct}%, ${usd((price * downPct) / 100)}`}
+              style={rangeBg(downPct, 3, 40)}
             />
           </div>
 
@@ -242,6 +250,7 @@ export default function RentVsBuyCalculator() {
               onChange={(e) => setRatePct(Number(e.target.value))}
               aria-label="Mortgage interest rate"
               aria-valuetext={`${ratePct.toFixed(2)}%`}
+              style={rangeBg(ratePct, 4, 9)}
             />
           </div>
 
@@ -309,6 +318,7 @@ export default function RentVsBuyCalculator() {
               onChange={(e) => setRent(Number(e.target.value))}
               aria-label="Monthly rent"
               aria-valuetext={`${usd(rent)} per month`}
+              style={rangeBg(rent, 500, 3000)}
             />
           </div>
 
@@ -327,6 +337,7 @@ export default function RentVsBuyCalculator() {
               onChange={(e) => setRentGrowthPct(Number(e.target.value))}
               aria-label="Annual rent growth"
               aria-valuetext={`${rentGrowthPct.toFixed(2)}% per year`}
+              style={rangeBg(rentGrowthPct, 0, 8)}
             />
           </div>
 
@@ -345,6 +356,7 @@ export default function RentVsBuyCalculator() {
               onChange={(e) => setInvestPct(Number(e.target.value))}
               aria-label="Investment return on down payment"
               aria-valuetext={`${investPct.toFixed(2)}% per year`}
+              style={rangeBg(investPct, 0, 10)}
             />
           </div>
 

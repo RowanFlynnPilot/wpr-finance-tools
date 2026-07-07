@@ -57,6 +57,12 @@ import CONSTANTS from './local-constants.json'
 const usd = (n) =>
   n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
 
+// Filled-track slider background: teal up to the thumb, parchment beyond it
+const rangeBg = (v, min, max) => {
+  const p = (((v - min) / (max - min)) * 100).toFixed(1)
+  return { background: `linear-gradient(to right, #3A867C ${p}%, #ddd6c6 ${p}%)` }
+}
+
 const monthLabel = (ym) => {
   const [y, m] = ym.split('-')
   const name = new Date(Number(y), Number(m) - 1, 1).toLocaleString('en-US', { month: 'short' })
@@ -127,6 +133,62 @@ function AmortizationChart({ loan, ratePct, termYears }) {
   )
 }
 
+function TrendChart({ months, medians, counts }) {
+  const W = 680
+  const H = 250
+  const padL = 48
+  const padR = 30
+  const padT = 26
+  const padB = 30
+  const min = Math.min(...medians)
+  const max = Math.max(...medians)
+  const span = max - min || 1
+  const x = (i) => padL + (i / (medians.length - 1)) * (W - padL - padR)
+  const y = (v) => padT + (1 - (v - min) / span) * (H - padT - padB)
+  const pts = medians.map((v, i) => [x(i), y(v)])
+  const line = pts.map(([px, py]) => `${px.toFixed(1)},${py.toFixed(1)}`).join(' ')
+  const area = `${padL},${H - padB} ${line} ${W - padR},${H - padB}`
+  const kd = (v) => `$${Math.round(v / 1000)}K`
+  return (
+    <svg
+      viewBox={`0 0 ${W} ${H}`}
+      style={{ width: '100%', height: 'auto', display: 'block' }}
+      role="img"
+      aria-label={`Line chart of monthly median sale prices, ${monthLabel(months[0])} through ${monthLabel(
+        months.at(-1),
+      )}: low ${kd(min)}, high ${kd(max)}, latest ${kd(medians.at(-1))}`}
+    >
+      {[min, max].map((v) => (
+        <g key={v}>
+          <line x1={padL} y1={y(v)} x2={W - padR} y2={y(v)} stroke="#cfc8b8"
+            strokeWidth="1" strokeDasharray="3 4" />
+          <text x={padL - 6} y={y(v) + 3} textAnchor="end" fontSize="10"
+            fontFamily="JetBrains Mono, monospace" fill="#6b6558">
+            {kd(v)}
+          </text>
+        </g>
+      ))}
+      <polygon points={area} fill="rgba(58, 134, 124, 0.09)" />
+      <polyline points={line} fill="none" stroke="#3A867C" strokeWidth="2" />
+      {medians.map((v, i) => (
+        <g key={months[i]}>
+          <circle cx={x(i)} cy={y(v)} r="3.2" fill="#3A867C" stroke="#fffdf8" strokeWidth="1.5">
+            <title>{`${monthLabel(months[i])}: ${usd(v)} (${counts[i]} sales)`}</title>
+          </circle>
+          <text x={x(i)} y={y(v) + (i % 2 ? 16 : -9)} textAnchor="middle" fontSize="9.5"
+            fontFamily="JetBrains Mono, monospace" fontWeight="600" fill="#1a1a1a">
+            {kd(v)}
+          </text>
+          <text x={x(i)} y={H - 8} textAnchor="middle" fontSize="9"
+            fontFamily="JetBrains Mono, monospace" fill="#6b6558">
+            {monthLabel(months[i])}
+          </text>
+        </g>
+      ))}
+    </svg>
+  )
+}
+
 function Sparkline({ values }) {
   const W = 132
   const H = 26
@@ -192,6 +254,7 @@ export default function TrueCostCalculator() {
   )
   const [primaryRes, setPrimaryRes] = useState(urlState.primary ?? true)
   const [copied, setCopied] = useState(false)
+  const [trendOpen, setTrendOpen] = useState(false)
 
   const shareScenario = () => {
     const q = new URLSearchParams({
@@ -278,15 +341,37 @@ export default function TrueCostCalculator() {
         transaction records ({CONSTANTS.market.median_sale_price.as_of}).
       </p>
       <p className="tcc-method-note">{CONSTANTS.market.median_sale_price.note}</p>
-      <div className="tcc-trend">
-        <Sparkline values={CONSTANTS.market.median_trend.medians} />
-        <span>
-          Monthly medians {monthLabel(CONSTANTS.market.median_trend.months[0])} –{' '}
-          {monthLabel(CONSTANTS.market.median_trend.months.at(-1))}: low{' '}
-          {usd(Math.min(...CONSTANTS.market.median_trend.medians))} · high{' '}
-          {usd(Math.max(...CONSTANTS.market.median_trend.medians))}
-        </span>
-      </div>
+      {trendOpen ? (
+        <div className="tcc-trend-big">
+          <TrendChart
+            months={CONSTANTS.market.median_trend.months}
+            medians={CONSTANTS.market.median_trend.medians}
+            counts={CONSTANTS.market.median_trend.counts}
+          />
+          <div className="tcc-trend-caption">
+            <span>
+              Monthly median of Marathon County single-family sales. Hover a point for the sale
+              count.
+            </span>
+            <button className="tcc-use" onClick={() => setTrendOpen(false)} aria-expanded="true">
+              Collapse ↑
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="tcc-trend">
+          <Sparkline values={CONSTANTS.market.median_trend.medians} />
+          <span>
+            Monthly medians {monthLabel(CONSTANTS.market.median_trend.months[0])} –{' '}
+            {monthLabel(CONSTANTS.market.median_trend.months.at(-1))}: low{' '}
+            {usd(Math.min(...CONSTANTS.market.median_trend.medians))} · high{' '}
+            {usd(Math.max(...CONSTANTS.market.median_trend.medians))}
+          </span>
+          <button className="tcc-use" onClick={() => setTrendOpen(true)} aria-expanded="false">
+            Expand chart →
+          </button>
+        </div>
+      )}
 
       <div className="tcc-grid">
         <div>
@@ -305,6 +390,7 @@ export default function TrueCostCalculator() {
               onChange={(e) => setPrice(Number(e.target.value))}
               aria-label="Home price"
               aria-valuetext={usd(price)}
+              style={rangeBg(price, 80000, 600000)}
             />
           </div>
 
@@ -325,6 +411,7 @@ export default function TrueCostCalculator() {
               onChange={(e) => setDownPct(Number(e.target.value))}
               aria-label="Down payment percent"
               aria-valuetext={`${downPct}%, ${usd((price * downPct) / 100)}`}
+              style={rangeBg(downPct, 3, 40)}
             />
           </div>
 
@@ -343,6 +430,7 @@ export default function TrueCostCalculator() {
               onChange={(e) => setRatePct(Number(e.target.value))}
               aria-label="Mortgage interest rate"
               aria-valuetext={`${ratePct.toFixed(2)}%`}
+              style={rangeBg(ratePct, 4, 9)}
             />
           </div>
 
@@ -439,6 +527,7 @@ export default function TrueCostCalculator() {
             {bars.map((b) => (
               <div
                 key={b.label}
+                title={`${b.label}: ${usd(b.value)}/mo`}
                 style={{ width: `${(b.value / out.total) * 100}%`, background: b.color }}
               />
             ))}
