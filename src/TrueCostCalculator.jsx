@@ -63,6 +63,70 @@ const monthLabel = (ym) => {
   return `${name} '${y.slice(2)}`
 }
 
+function AmortizationChart({ loan, ratePct, termYears }) {
+  const r = ratePct / 100 / 12
+  const pi = monthlyPI(loan, ratePct, termYears)
+  const years = []
+  let bal = loan
+  for (let y = 1; y <= termYears; y++) {
+    let interest = 0
+    let principal = 0
+    for (let m = 0; m < 12; m++) {
+      const i = bal * r
+      interest += i
+      principal += pi - i
+      bal -= pi - i
+    }
+    years.push({ y, interest, principal })
+  }
+  const crossover = years.find((s) => s.principal > s.interest)?.y
+  const year1IntPct = Math.round((years[0].interest / (pi * 12)) * 100)
+
+  const W = 320
+  const H = 110
+  const padL = 40
+  const padR = 8
+  const padT = 6
+  const padB = 16
+  const annual = pi * 12
+  const x = (yr) => padL + ((yr - 1) / (termYears - 1)) * (W - padL - padR)
+  const yOf = (v) => padT + (1 - v / annual) * (H - padT - padB)
+  const boundary = years.map((s) => `${x(s.y).toFixed(1)},${yOf(s.principal).toFixed(1)}`)
+  const base = H - padB
+  const principalPoly = `${padL},${base} ${boundary.join(' ')} ${W - padR},${base}`
+
+  return (
+    <>
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        style={{ width: '100%', height: 'auto', display: 'block', marginTop: 12 }}
+        role="img"
+        aria-label={`Chart: in year one, ${year1IntPct}% of principal-and-interest payments go to interest.${
+          crossover ? ` Principal overtakes interest in year ${crossover}.` : ''
+        }`}
+      >
+        <rect x={padL} y={padT} width={W - padL - padR} height={H - padT - padB} fill="#e5dfd0" />
+        <polygon points={principalPoly} fill="#3A867C" />
+        <text x={padL - 4} y={padT + 8} textAnchor="end" fontSize="9"
+          fontFamily="JetBrains Mono, monospace" fill="#6b6558">
+          {`$${Math.round(annual / 1000)}K/yr`}
+        </text>
+        {[1, Math.round(termYears / 2), termYears].map((yr) => (
+          <text key={yr} x={x(yr)} y={H - 4} textAnchor="middle" fontSize="9"
+            fontFamily="JetBrains Mono, monospace" fill="#6b6558">
+            {yr} yr
+          </text>
+        ))}
+      </svg>
+      <div className="tcc-cross-note">
+        <span className="key key-principal" /> principal · <span className="key key-interest" />{' '}
+        interest — how each year's P&amp;I splits. Year 1 is {year1IntPct}% interest
+        {crossover ? `; principal takes the larger share from year ${crossover}.` : '.'}
+      </div>
+    </>
+  )
+}
+
 function Sparkline({ values }) {
   const W = 132
   const H = 26
@@ -240,6 +304,7 @@ export default function TrueCostCalculator() {
               value={price}
               onChange={(e) => setPrice(Number(e.target.value))}
               aria-label="Home price"
+              aria-valuetext={usd(price)}
             />
           </div>
 
@@ -259,6 +324,7 @@ export default function TrueCostCalculator() {
               value={downPct}
               onChange={(e) => setDownPct(Number(e.target.value))}
               aria-label="Down payment percent"
+              aria-valuetext={`${downPct}%, ${usd((price * downPct) / 100)}`}
             />
           </div>
 
@@ -276,6 +342,7 @@ export default function TrueCostCalculator() {
               value={ratePct}
               onChange={(e) => setRatePct(Number(e.target.value))}
               aria-label="Mortgage interest rate"
+              aria-valuetext={`${ratePct.toFixed(2)}%`}
             />
           </div>
 
@@ -377,7 +444,7 @@ export default function TrueCostCalculator() {
             ))}
           </div>
 
-          <div className="tcc-total">
+          <div className="tcc-total" aria-live="polite">
             <span className="lbl">Total</span>
             <span>
               <span className="num">{usd(out.total)}</span>
@@ -430,6 +497,7 @@ export default function TrueCostCalculator() {
               If rates move a point: {usd(out.totalLo)}/mo at {(ratePct - 1).toFixed(2)}% ·{' '}
               {usd(out.totalHi)}/mo at {(ratePct + 1).toFixed(2)}%
             </div>
+            <AmortizationChart loan={out.loan} ratePct={ratePct} termYears={termYears} />
             <button className="tcc-share" onClick={shareScenario}>
               {copied ? 'Link copied ✓' : 'Share this scenario →'}
             </button>
@@ -450,7 +518,10 @@ export default function TrueCostCalculator() {
         state report (2022 data — premiums have risen since, and quotes vary by home and insurer),
         with dwelling coverage approximated by price. Median sale price computed from Wisconsin DOR
         transfer records via WPR's property transaction data. Updated{' '}
-        {CONSTANTS._meta.updated}.
+        {CONSTANTS._meta.updated}.{' '}
+        <a className="tcc-src-link" href="?tool=sources" target="_blank" rel="noopener">
+          Sources &amp; methodology →
+        </a>
       </div>
 
       <div className="tcc-sponsor">

@@ -203,6 +203,7 @@ export default function RentVsBuyCalculator() {
               value={price}
               onChange={(e) => setPrice(Number(e.target.value))}
               aria-label="Home price"
+              aria-valuetext={usd(price)}
             />
           </div>
 
@@ -222,6 +223,7 @@ export default function RentVsBuyCalculator() {
               value={downPct}
               onChange={(e) => setDownPct(Number(e.target.value))}
               aria-label="Down payment percent"
+              aria-valuetext={`${downPct}%, ${usd((price * downPct) / 100)}`}
             />
           </div>
 
@@ -239,6 +241,7 @@ export default function RentVsBuyCalculator() {
               value={ratePct}
               onChange={(e) => setRatePct(Number(e.target.value))}
               aria-label="Mortgage interest rate"
+              aria-valuetext={`${ratePct.toFixed(2)}%`}
             />
           </div>
 
@@ -305,6 +308,7 @@ export default function RentVsBuyCalculator() {
               value={rent}
               onChange={(e) => setRent(Number(e.target.value))}
               aria-label="Monthly rent"
+              aria-valuetext={`${usd(rent)} per month`}
             />
           </div>
 
@@ -322,6 +326,7 @@ export default function RentVsBuyCalculator() {
               value={rentGrowthPct}
               onChange={(e) => setRentGrowthPct(Number(e.target.value))}
               aria-label="Annual rent growth"
+              aria-valuetext={`${rentGrowthPct.toFixed(2)}% per year`}
             />
           </div>
 
@@ -339,6 +344,7 @@ export default function RentVsBuyCalculator() {
               value={investPct}
               onChange={(e) => setInvestPct(Number(e.target.value))}
               aria-label="Investment return on down payment"
+              aria-valuetext={`${investPct.toFixed(2)}% per year`}
             />
           </div>
 
@@ -400,7 +406,7 @@ export default function RentVsBuyCalculator() {
             <span className="num">{usd(out.rentNet)}</span>
           </div>
 
-          <div className="tcc-total">
+          <div className="tcc-total" aria-live="polite">
             <span className="lbl">{buyWins ? 'Buying' : 'Renting'} nets</span>
             <span>
               <span className="num">{usd(gap)}</span>
@@ -428,7 +434,10 @@ export default function RentVsBuyCalculator() {
         closing costs at the chosen return; monthly cost differences are not invested by either
         side, and maintenance, utilities, and selling costs are not modeled. HUD fair market rent
         includes utilities. Buying costs use the same DOR tax, NAIC insurance, and PMI data as the
-        True Cost calculator. Updated {CONSTANTS._meta.updated}.
+        True Cost calculator. Updated {CONSTANTS._meta.updated}.{' '}
+        <a className="tcc-src-link" href="?tool=sources" target="_blank" rel="noopener">
+          Sources &amp; methodology →
+        </a>
       </div>
 
       <div className="tcc-sponsor">
