@@ -127,7 +127,7 @@
       }
     },
     "household_income": {
-      "note": "ACS 5-year median household income (table B19013). Shown for the same 14 municipalities that carry a typical sale price (one display rule: local figures appear where the market sample supports them); all other selections fall back to the county-wide figure, labeled as such. moe = 90% margin of error, published for transparency.",
+      "note": "ACS 5-year median household income (table B19013), published for every municipality where the Census releases an estimate (59 of 61; two tiny multi-county slivers are suppressed and fall back to the county figure). Unlike the sale-price medians (computed by WPR, n >= 30 threshold), these are the Census Bureau's own published small-area estimates. moe = 90% margin of error, stored per entry and shown inline where wide.",
       "county": {
         "median": 77884,
         "moe": 2218
@@ -136,15 +136,155 @@
       "as_of": "ACS 2020-2024 (released Dec 2025)",
       "verified": false,
       "values": {
+        "city-abbotsford": {
+          "median": 61750,
+          "moe": 19166,
+          "moe_pct": 31.0
+        },
         "village-athens": {
           "median": 52750,
           "moe": 9828,
           "moe_pct": 18.6
         },
+        "town-bergen": {
+          "median": 96406,
+          "moe": 9815,
+          "moe_pct": 10.2
+        },
+        "town-berlin": {
+          "median": 91875,
+          "moe": 12974,
+          "moe_pct": 14.1
+        },
+        "town-bern": {
+          "median": 78929,
+          "moe": 8021,
+          "moe_pct": 10.2
+        },
+        "town-bevent": {
+          "median": 92417,
+          "moe": 10461,
+          "moe_pct": 11.3
+        },
+        "town-brighton": {
+          "median": 81250,
+          "moe": 30959,
+          "moe_pct": 38.1
+        },
+        "town-cassel": {
+          "median": 82250,
+          "moe": 17051,
+          "moe_pct": 20.7
+        },
         "town-cleveland": {
           "median": 100705,
           "moe": 19429,
           "moe_pct": 19.3
+        },
+        "city-colby": {
+          "median": 31964,
+          "moe": 16276,
+          "moe_pct": 50.9
+        },
+        "town-day": {
+          "median": 93750,
+          "moe": 26277,
+          "moe_pct": 28.0
+        },
+        "town-easton": {
+          "median": 104643,
+          "moe": 9522,
+          "moe_pct": 9.1
+        },
+        "town-eau-pleine": {
+          "median": 71128,
+          "moe": 457,
+          "moe_pct": 0.6
+        },
+        "village-edgar": {
+          "median": 63482,
+          "moe": 16094,
+          "moe_pct": 25.4
+        },
+        "village-elderon": {
+          "median": 65417,
+          "moe": 22890,
+          "moe_pct": 35.0
+        },
+        "town-elderon": {
+          "median": 100000,
+          "moe": 15541,
+          "moe_pct": 15.5
+        },
+        "town-emmet": {
+          "median": 78750,
+          "moe": 26098,
+          "moe_pct": 33.1
+        },
+        "village-fenwood": {
+          "median": 78750,
+          "moe": 14159,
+          "moe_pct": 18.0
+        },
+        "town-frankfort": {
+          "median": 87500,
+          "moe": 30680,
+          "moe_pct": 35.1
+        },
+        "town-franzen": {
+          "median": 71591,
+          "moe": 24628,
+          "moe_pct": 34.4
+        },
+        "town-green-valley": {
+          "median": 80893,
+          "moe": 14207,
+          "moe_pct": 17.6
+        },
+        "town-guenther": {
+          "median": 101875,
+          "moe": 37890,
+          "moe_pct": 37.2
+        },
+        "town-halsey": {
+          "median": 88750,
+          "moe": 14197,
+          "moe_pct": 16.0
+        },
+        "town-hamburg": {
+          "median": 92656,
+          "moe": 23104,
+          "moe_pct": 24.9
+        },
+        "town-harrison": {
+          "median": 56782,
+          "moe": 7526,
+          "moe_pct": 13.3
+        },
+        "village-hatley": {
+          "median": 93750,
+          "moe": 19131,
+          "moe_pct": 20.4
+        },
+        "town-hewitt": {
+          "median": 66250,
+          "moe": 24679,
+          "moe_pct": 37.3
+        },
+        "town-holton": {
+          "median": 79250,
+          "moe": 21624,
+          "moe_pct": 27.3
+        },
+        "town-hull": {
+          "median": 77344,
+          "moe": 15337,
+          "moe_pct": 19.8
+        },
+        "town-johnson": {
+          "median": 74800,
+          "moe": 7499,
+          "moe_pct": 10.0
         },
         "town-knowlton": {
           "median": 93043,
@@ -156,25 +296,75 @@
           "moe": 14487,
           "moe_pct": 12.6
         },
+        "town-mcmillan": {
+          "median": 112917,
+          "moe": 9841,
+          "moe_pct": 8.7
+        },
         "village-maine": {
           "median": 110721,
           "moe": 16073,
           "moe_pct": 14.5
+        },
+        "town-marathon": {
+          "median": 106250,
+          "moe": 17529,
+          "moe_pct": 16.5
         },
         "village-marathon-city": {
           "median": 89519,
           "moe": 6920,
           "moe_pct": 7.7
         },
+        "city-marshfield": {
+          "median": 54174,
+          "moe": 15838,
+          "moe_pct": 29.2
+        },
         "city-mosinee": {
           "median": 73479,
           "moe": 10157,
           "moe_pct": 13.8
         },
+        "town-mosinee": {
+          "median": 101500,
+          "moe": 14571,
+          "moe_pct": 14.4
+        },
+        "town-norrie": {
+          "median": 92778,
+          "moe": 12262,
+          "moe_pct": 13.2
+        },
+        "town-plover": {
+          "median": 84375,
+          "moe": 11181,
+          "moe_pct": 13.3
+        },
+        "town-reid": {
+          "median": 87083,
+          "moe": 17709,
+          "moe_pct": 20.3
+        },
+        "town-rib-falls": {
+          "median": 103750,
+          "moe": 16453,
+          "moe_pct": 15.9
+        },
         "village-rib-mountain": {
           "median": 94294,
           "moe": 10147,
           "moe_pct": 10.8
+        },
+        "town-rietbrock": {
+          "median": 85227,
+          "moe": 18122,
+          "moe_pct": 21.3
+        },
+        "town-ringle": {
+          "median": 91625,
+          "moe": 3935,
+          "moe_pct": 4.3
         },
         "village-rothschild": {
           "median": 88261,
@@ -191,20 +381,55 @@
           "moe": 15920,
           "moe_pct": 22.8
         },
+        "town-spencer": {
+          "median": 100988,
+          "moe": 4959,
+          "moe_pct": 4.9
+        },
         "town-stettin": {
           "median": 104697,
           "moe": 10048,
           "moe_pct": 9.6
+        },
+        "village-stratford": {
+          "median": 66739,
+          "moe": 8493,
+          "moe_pct": 12.7
+        },
+        "town-texas": {
+          "median": 86875,
+          "moe": 14082,
+          "moe_pct": 16.2
+        },
+        "village-unity": {
+          "median": 72500,
+          "moe": 36173,
+          "moe_pct": 49.9
         },
         "city-wausau": {
           "median": 64389,
           "moe": 3515,
           "moe_pct": 5.5
         },
+        "town-wausau": {
+          "median": 75750,
+          "moe": 18840,
+          "moe_pct": 24.9
+        },
         "village-weston": {
           "median": 78207,
           "moe": 7806,
           "moe_pct": 10.0
+        },
+        "town-weston": {
+          "median": 136563,
+          "moe": 34622,
+          "moe_pct": 25.4
+        },
+        "town-wien": {
+          "median": 92000,
+          "moe": 23995,
+          "moe_pct": 26.1
         }
       }
     }

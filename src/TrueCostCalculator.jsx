@@ -231,7 +231,7 @@ function TrendChart({ months, medians, counts }) {
   )
 }
 
-function CompareBars({ label, hereValue, countyValue, format }) {
+function CompareBars({ label, hereValue, countyValue, format, hereExtra, fallbackNote }) {
   const scale = Math.max(hereValue ?? 0, countyValue)
   const bar = (v) => `${Math.max((v / scale) * 100, 2).toFixed(1)}%`
   return (
@@ -243,10 +243,13 @@ function CompareBars({ label, hereValue, countyValue, format }) {
           <span className="tcc-gbar">
             <span className="fill" style={{ width: bar(hereValue) }} />
           </span>
-          <span className="gval">{format(hereValue)}</span>
+          <span className="gval">
+            {format(hereValue)}
+            {hereExtra && <span className="gmoe"> {hereExtra}</span>}
+          </span>
         </div>
       ) : (
-        <div className="tcc-gline muted-note">too few local sales for a figure here</div>
+        <div className="tcc-gline muted-note">{fallbackNote}</div>
       )}
       <div className="tcc-gline">
         <span className="tag">county</span>
@@ -277,12 +280,15 @@ function GlancePanel({ muni }) {
         hereValue={typical ? typical.median : null}
         countyValue={countyPrice}
         format={usd}
+        fallbackNote="too few local sales for a figure here"
       />
       <CompareBars
         label="Median household income"
         hereValue={income ? income.median : null}
         countyValue={countyIncome}
         format={usd}
+        hereExtra={income && income.moe_pct >= 15 ? `±${Math.round(income.moe_pct)}%` : null}
+        fallbackNote="no published Census estimate for this area"
       />
       <div className="tcc-glance-row">
         <div className="tcc-glance-lbl">
