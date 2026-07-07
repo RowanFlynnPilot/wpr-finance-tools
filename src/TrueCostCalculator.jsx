@@ -7,6 +7,12 @@ import CONSTANTS from './local-constants.json'
     c?.market?.median_sale_price?.value > 0,
     typeof c?.market?.median_sale_price?.note === 'string' &&
       c.market.median_sale_price.note.length > 0,
+    c?.market?.household_income?.county?.median > 0 &&
+      typeof c.market.household_income.values === 'object' &&
+      Object.entries(c.market.household_income.values).every(
+        ([id, v]) =>
+          v.median > 0 && c.property_tax.municipalities.some((m) => m.id === id),
+      ),
     typeof c?.market?.municipal_typical_prices?.values === 'object' &&
       Object.entries(c.market.municipal_typical_prices.values).every(
         ([id, t]) =>
@@ -392,6 +398,20 @@ export default function TrueCostCalculator() {
               <span className="num">~{usd(Math.round(out.incomeNeeded / 1000) * 1000)}/yr</span>
             </div>
             <div className="tcc-xrow">
+              <span>
+                Median household income
+                {CONSTANTS.market.household_income.values[muniId] ? ' here' : ' (county-wide)'}
+              </span>
+              <span className="dot" />
+              <span className="num">
+                {usd(
+                  (CONSTANTS.market.household_income.values[muniId] ??
+                    CONSTANTS.market.household_income.county).median,
+                )}
+                /yr
+              </span>
+            </div>
+            <div className="tcc-xrow">
               <span>Equity after 5 years</span>
               <span className="dot" />
               <span className="num">{usd(out.equity5)}</span>
@@ -425,7 +445,8 @@ export default function TrueCostCalculator() {
         and, for primary residences, the lottery &amp; gaming credit (school-district averages
         where a municipality spans districts). Income
         needed applies the standard 28% housing-cost-to-income ratio; equity assumes a level home
-        price. Insurance uses Wisconsin average premiums by coverage amount from the NAIC's latest
+        price. Median household income is from the U.S. Census Bureau's American Community Survey
+        (2020–2024 five-year estimates); small-area estimates carry margins of error. Insurance uses Wisconsin average premiums by coverage amount from the NAIC's latest
         state report (2022 data — premiums have risen since, and quotes vary by home and insurer),
         with dwelling coverage approximated by price. Median sale price computed from Wisconsin DOR
         transfer records via WPR's property transaction data. Updated{' '}
