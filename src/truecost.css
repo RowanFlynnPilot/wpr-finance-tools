@@ -392,6 +392,77 @@ input[type='range'].tcc-range:hover::-moz-range-thumb {
   outline-offset: 2px;
 }
 
+.tcc-glance {
+  margin-top: 22px;
+  border: 1.5px solid #1a1a1a;
+  background: #fffdf8;
+  padding: 14px 14px 10px;
+  box-shadow: 5px 5px 0 rgba(26, 26, 26, 0.08);
+}
+.tcc-glance-head {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-bottom: 1.5px solid #1a1a1a;
+  padding-bottom: 7px;
+  margin-bottom: 11px;
+}
+.tcc-glance-row {
+  margin-bottom: 12px;
+}
+.tcc-glance-lbl {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #3d3a34;
+  margin-bottom: 5px;
+}
+.tcc-gline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+}
+.tcc-gline .tag {
+  width: 44px;
+  flex-shrink: 0;
+  color: #6b6558;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.tcc-gbar {
+  flex: 1;
+  height: 11px;
+  border: 1px solid #1a1a1a;
+  background: transparent;
+  display: block;
+}
+.tcc-gbar .fill {
+  display: block;
+  height: 100%;
+  background: #3a867c;
+}
+.tcc-gbar.county .fill {
+  background: #e5dfd0;
+}
+.tcc-gline .gval {
+  font-weight: 600;
+  color: #1a1a1a;
+  white-space: nowrap;
+}
+.tcc-gline .gval.big {
+  font-size: 12.5px;
+}
+.tcc-gline.muted-note {
+  color: #6b6558;
+  font-size: 10.5px;
+}
+
 .tcc-src-link {
   color: #3a867c;
   font-weight: 600;

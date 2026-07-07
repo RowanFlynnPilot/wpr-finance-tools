@@ -91,7 +91,7 @@ function AmortizationChart({ loan, ratePct, termYears }) {
   const W = 320
   const H = 110
   const padL = 40
-  const padR = 8
+  const padR = 18
   const padT = 6
   const padB = 16
   const annual = pi * 12
@@ -134,11 +134,12 @@ function AmortizationChart({ loan, ratePct, termYears }) {
 }
 
 function TrendChart({ months, medians, counts }) {
+  const [active, setActive] = useState(null)
   const W = 680
   const H = 250
   const padL = 48
   const padR = 30
-  const padT = 26
+  const padT = 30
   const padB = 30
   const min = Math.min(...medians)
   const max = Math.max(...medians)
@@ -149,6 +150,21 @@ function TrendChart({ months, medians, counts }) {
   const line = pts.map(([px, py]) => `${px.toFixed(1)},${py.toFixed(1)}`).join(' ')
   const area = `${padL},${H - padB} ${line} ${W - padR},${H - padB}`
   const kd = (v) => `$${Math.round(v / 1000)}K`
+  const last = medians.length - 1
+
+  // Styled tooltip anchored to the active point, clamped to the plot area
+  const TIP_W = 150
+  const TIP_H = 40
+  const tip =
+    active !== null &&
+    (() => {
+      const [px, py] = pts[active]
+      const tx = Math.min(Math.max(px - TIP_W / 2, padL - 24), W - padR - TIP_W + 24)
+      const above = py - TIP_H - 12 > 4
+      const ty = above ? py - TIP_H - 12 : py + 14
+      return { tx, ty, px, py }
+    })()
+
   return (
     <svg
       viewBox={`0 0 ${W} ${H}`}
@@ -157,6 +173,7 @@ function TrendChart({ months, medians, counts }) {
       aria-label={`Line chart of monthly median sale prices, ${monthLabel(months[0])} through ${monthLabel(
         months.at(-1),
       )}: low ${kd(min)}, high ${kd(max)}, latest ${kd(medians.at(-1))}`}
+      onMouseLeave={() => setActive(null)}
     >
       {[min, max].map((v) => (
         <g key={v}>
@@ -172,20 +189,112 @@ function TrendChart({ months, medians, counts }) {
       <polyline points={line} fill="none" stroke="#3A867C" strokeWidth="2" />
       {medians.map((v, i) => (
         <g key={months[i]}>
-          <circle cx={x(i)} cy={y(v)} r="3.2" fill="#3A867C" stroke="#fffdf8" strokeWidth="1.5">
-            <title>{`${monthLabel(months[i])}: ${usd(v)} (${counts[i]} sales)`}</title>
-          </circle>
-          <text x={x(i)} y={y(v) + (i % 2 ? 16 : -9)} textAnchor="middle" fontSize="9.5"
-            fontFamily="JetBrains Mono, monospace" fontWeight="600" fill="#1a1a1a">
-            {kd(v)}
-          </text>
+          <circle cx={x(i)} cy={y(v)} r={active === i ? 5 : 3.2} fill="#3A867C"
+            stroke="#fffdf8" strokeWidth="1.5" />
           <text x={x(i)} y={H - 8} textAnchor="middle" fontSize="9"
-            fontFamily="JetBrains Mono, monospace" fill="#6b6558">
+            fontFamily="JetBrains Mono, monospace"
+            fill={active === i ? '#1a1a1a' : '#6b6558'}
+            fontWeight={active === i ? '700' : '400'}>
             {monthLabel(months[i])}
           </text>
+          {/* generous invisible hit target */}
+          <rect x={x(i) - (W - padL - padR) / (2 * last)} y={0}
+            width={(W - padL - padR) / last} height={H}
+            fill="transparent"
+            onMouseEnter={() => setActive(i)}
+            onClick={() => setActive(i)} />
         </g>
       ))}
+      {/* latest value stays labeled even without hover */}
+      <text x={pts[last][0]} y={pts[last][1] - 10} textAnchor="end" fontSize="10.5"
+        fontFamily="JetBrains Mono, monospace" fontWeight="700" fill="#1a1a1a">
+        {kd(medians[last])}
+      </text>
+      {tip && (
+        <g pointerEvents="none">
+          <line x1={tip.px} y1={padT - 4} x2={tip.px} y2={H - padB} stroke="#3A867C"
+            strokeWidth="1" strokeDasharray="2 3" opacity="0.6" />
+          <rect x={tip.tx} y={tip.ty} width={TIP_W} height={TIP_H} fill="#1a1a1a" />
+          <rect x={tip.tx + 2} y={tip.ty + 2} width={TIP_W - 4} height={TIP_H - 4}
+            fill="#fffdf8" stroke="#1a1a1a" strokeWidth="1" />
+          <text x={tip.tx + TIP_W / 2} y={tip.ty + 17} textAnchor="middle" fontSize="11"
+            fontFamily="JetBrains Mono, monospace" fontWeight="700" fill="#1a1a1a">
+            {`${monthLabel(months[active])} · ${usd(medians[active])}`}
+          </text>
+          <text x={tip.tx + TIP_W / 2} y={tip.ty + 31} textAnchor="middle" fontSize="9.5"
+            fontFamily="JetBrains Mono, monospace" fill="#6b6558">
+            {`median of ${counts[active]} sales`}
+          </text>
+        </g>
+      )}
     </svg>
+  )
+}
+
+function CompareBars({ label, hereValue, countyValue, format }) {
+  const scale = Math.max(hereValue ?? 0, countyValue)
+  const bar = (v) => `${Math.max((v / scale) * 100, 2).toFixed(1)}%`
+  return (
+    <div className="tcc-glance-row">
+      <div className="tcc-glance-lbl">{label}</div>
+      {hereValue != null ? (
+        <div className="tcc-gline">
+          <span className="tag">here</span>
+          <span className="tcc-gbar">
+            <span className="fill" style={{ width: bar(hereValue) }} />
+          </span>
+          <span className="gval">{format(hereValue)}</span>
+        </div>
+      ) : (
+        <div className="tcc-gline muted-note">too few local sales for a figure here</div>
+      )}
+      <div className="tcc-gline">
+        <span className="tag">county</span>
+        <span className="tcc-gbar county">
+          <span className="fill" style={{ width: bar(countyValue) }} />
+        </span>
+        <span className="gval">{format(countyValue)}</span>
+      </div>
+    </div>
+  )
+}
+
+function GlancePanel({ muni }) {
+  const typical = CONSTANTS.market.municipal_typical_prices.values[muni.id]
+  const income = CONSTANTS.market.household_income.values[muni.id]
+  const countyPrice = CONSTANTS.market.median_sale_price.value
+  const countyIncome = CONSTANTS.market.household_income.county.median
+  const basisPrice = typical ? typical.median : countyPrice
+  const taxOnTypical = Math.max(
+    0,
+    basisPrice * muni.effective_rate - muni.first_dollar_credit - muni.lottery_credit,
+  )
+  return (
+    <div className="tcc-glance">
+      <div className="tcc-glance-head">At a glance · {muni.name}</div>
+      <CompareBars
+        label="Typical sale price (12 mo)"
+        hereValue={typical ? typical.median : null}
+        countyValue={countyPrice}
+        format={usd}
+      />
+      <CompareBars
+        label="Median household income"
+        hereValue={income ? income.median : null}
+        countyValue={countyIncome}
+        format={usd}
+      />
+      <div className="tcc-glance-row">
+        <div className="tcc-glance-lbl">
+          Property tax on the typical {typical ? 'home here' : 'county home'} (primary residence)
+        </div>
+        <div className="tcc-gline">
+          <span className="gval big">
+            {usd(taxOnTypical)}/yr · {(muni.effective_rate * 100).toFixed(2)}% effective rate
+          </span>
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -507,6 +616,8 @@ export default function TrueCostCalculator() {
               </div>
             )}
           </div>
+
+          <GlancePanel muni={out.muni} />
         </div>
 
         <div className="tcc-ledger">
