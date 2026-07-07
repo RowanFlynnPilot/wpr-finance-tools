@@ -44,6 +44,54 @@ function monthlyPI(principal, annualRatePct, termYears) {
   return (principal * r * f) / (f - 1)
 }
 
+const usdK = (n) => `$${Math.round(n / 1000)}K`
+
+function CrossoverChart({ series, breakeven }) {
+  const W = 320
+  const H = 130
+  const padL = 34
+  const padR = 8
+  const padT = 8
+  const padB = 18
+  const yMax = Math.max(...series.flatMap((s) => [s.buy, s.rent]))
+  const x = (year) => padL + ((year - 1) / 14) * (W - padL - padR)
+  const y = (v) => padT + (1 - v / yMax) * (H - padT - padB)
+  const line = (key) =>
+    series.map((s) => `${x(s.year).toFixed(1)},${y(s[key]).toFixed(1)}`).join(' ')
+  const be = breakeven && series.find((s) => s.year === breakeven)
+  return (
+    <svg
+      viewBox={`0 0 ${W} ${H}`}
+      style={{ width: '100%', height: 'auto', display: 'block' }}
+      role="img"
+      aria-label={
+        breakeven
+          ? `Chart: net cost of buying overtakes renting in year ${breakeven}`
+          : 'Chart: renting stays cheaper through year 15 under these assumptions'
+      }
+    >
+      <line x1={padL} y1={H - padB} x2={W - padR} y2={H - padB} stroke="#cfc8b8" strokeWidth="1" />
+      {[5, 10, 15].map((yr) => (
+        <text key={yr} x={x(yr)} y={H - 5} textAnchor="middle" fontSize="9"
+          fontFamily="JetBrains Mono, monospace" fill="#6b6558">
+          {yr} yr
+        </text>
+      ))}
+      <text x={padL - 4} y={padT + 8} textAnchor="end" fontSize="9"
+        fontFamily="JetBrains Mono, monospace" fill="#6b6558">
+        {usdK(yMax)}
+      </text>
+      <polyline points={line('rent')} fill="none" stroke="#1a1a1a" strokeWidth="1.5"
+        strokeDasharray="4 3" />
+      <polyline points={line('buy')} fill="none" stroke="#3A867C" strokeWidth="2" />
+      {be && (
+        <circle cx={x(be.year)} cy={y(be.buy)} r="3.5" fill="#3A867C" stroke="#fffdf8"
+          strokeWidth="1.5" />
+      )}
+    </svg>
+  )
+}
+
 export default function RentVsBuyCalculator() {
   const median = CONSTANTS.market.median_sale_price.value
   const munis = CONSTANTS.property_tax.municipalities
@@ -98,7 +146,30 @@ export default function RentVsBuyCalculator() {
     const invGain = portfolio - upfront
     const rentNet = rentPaid - invGain
 
-    return { muni, upfront, buyPayments, buyOutlay, equity, buyNet, rentPaid, invGain, rentNet }
+    // Year-by-year net-cost series for the crossover chart (15 years, same model)
+    const series = []
+    let sBal = loan
+    let sBuyPay = 0
+    let sRent = 0
+    for (let m = 1; m <= 15 * 12; m++) {
+      const pmi = sBal / price > CONSTANTS.pmi.ltv_threshold ? pmiM : 0
+      sBuyPay += pi + taxM + insM + pmi
+      sBal -= pi - sBal * r
+      sRent += rent * Math.pow(1 + rentGrowthPct / 100, Math.floor((m - 1) / 12))
+      if (m % 12 === 0) {
+        series.push({
+          year: m / 12,
+          buy: upfront + sBuyPay - (price - Math.max(sBal, 0)),
+          rent: sRent - (upfront * Math.pow(1 + investPct / 100 / 12, m) - upfront),
+        })
+      }
+    }
+    const breakeven = series.find((s) => s.buy <= s.rent)?.year ?? null
+
+    return {
+      muni, upfront, buyPayments, buyOutlay, equity, buyNet, rentPaid, invGain, rentNet,
+      series, breakeven,
+    }
   }, [price, downPct, ratePct, muniId, rent, rentGrowthPct, investPct, years, munis])
 
   const buyWins = out.buyNet < out.rentNet
@@ -335,6 +406,17 @@ export default function RentVsBuyCalculator() {
               <span className="num">{usd(gap)}</span>
               <span className="per">less over {years} yrs</span>
             </span>
+          </div>
+
+          <div className="tcc-cross">
+            <CrossoverChart series={out.series} breakeven={out.breakeven} />
+            <div className="tcc-cross-note">
+              <span className="key key-buy" /> buying · <span className="key key-rent" /> renting
+              — net cost by year.{' '}
+              {out.breakeven
+                ? `Buying pulls ahead in year ${out.breakeven}.`
+                : 'Renting stays cheaper through year 15 under these assumptions.'}
+            </div>
           </div>
         </div>
       </div>

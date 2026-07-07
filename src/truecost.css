@@ -343,6 +343,31 @@ input[type='range'].tcc-range {
   outline-offset: 2px;
 }
 
+.tcc-cross {
+  margin-top: 14px;
+  border-top: 1px solid #cfc8b8;
+  padding-top: 12px;
+}
+.tcc-cross-note {
+  margin-top: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #6b6558;
+}
+.tcc-cross-note .key {
+  display: inline-block;
+  width: 14px;
+  height: 0;
+  vertical-align: middle;
+}
+.tcc-cross-note .key-buy {
+  border-top: 2px solid #3a867c;
+}
+.tcc-cross-note .key-rent {
+  border-top: 2px dashed #1a1a1a;
+}
+
 .tcc-sponsor-logo {
   height: 20px;
   vertical-align: middle;
